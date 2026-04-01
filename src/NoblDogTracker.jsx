@@ -1,58 +1,137 @@
 import { useState, useRef, useCallback } from "react";
 
-// ── NOBL Brand Tokens ────────────────────────────────────────────────────────
 const C = {
-  forest:   "#3C5C53",  // primary — headers, nav, CTAs
-  sky:      "#72AAB9",  // secondary — accents, icons, progress
-  ember:    "#CC6633",  // alert/warning — flash reminder, rejections
-  fog:      "#F1F1F0",  // background — page, cards
-  white:    "#FFFFFF",
+  forest:     "#3C5C53",
+  sky:        "#72AAB9",
+  ember:      "#CC6633",
+  fog:        "#F1F1F0",
+  white:      "#FFFFFF",
   forestDark: "#2a423c",
-  forestLight: "#4e7468",
-  skyLight:  "#a8cdd8",
-  skyDark:   "#4d8ea0",
-  emberLight:"#d98460",
-  emberDark: "#9e4e26",
-  text:      "#1e2e2a",
-  textMid:   "#4a6660",
-  textLight: "#7a9990",
+  skyLight:   "#a8cdd8",
+  skyDark:    "#4d8ea0",
+  emberLight: "#d98460",
+  text:       "#1e2e2a",
+  textMid:    "#4a6660",
+  textLight:  "#7a9990",
 };
 
+// Each zone has an SVG guide diagram showing exactly what the photo should look like
 const PHOTO_ZONES = [
   {
     id: "back",
     label: "Back & Top Coat",
-    icon: "↑",
-    instruction: "Stand your dog naturally. Hold camera directly above their back, about 2 feet away. Flash ON. The full spine from neck to tail must be visible.",
-    guide: "Top-down · Full spine · 2 ft away · Flash on",
+    shortLabel: "Back",
+    tip: "Stand your dog naturally. Hold phone directly above their back, about 2 feet up. Capture neck to tail.",
+    svgGuide: (
+      <svg viewBox="0 0 160 100" width="100%" style={{ borderRadius: "8px", display: "block" }}>
+        <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
+        {/* Dog body top-down */}
+        <ellipse cx="80" cy="52" rx="38" ry="22" fill="#b5907a" />
+        {/* Head */}
+        <ellipse cx="80" cy="26" rx="16" ry="14" fill="#c9a48e" />
+        {/* Ears */}
+        <ellipse cx="66" cy="24" rx="7" ry="10" fill="#a07860" />
+        <ellipse cx="94" cy="24" rx="7" ry="10" fill="#a07860" />
+        {/* Tail */}
+        <path d="M80 74 Q88 86 96 82" stroke="#b5907a" strokeWidth="5" fill="none" strokeLinecap="round"/>
+        {/* Camera crosshair */}
+        <circle cx="80" cy="52" r="30" fill="none" stroke={C.sky} strokeWidth="1.5" strokeDasharray="4 3"/>
+        <line x1="80" y1="18" x2="80" y2="86" stroke={C.sky} strokeWidth="1" strokeDasharray="3 3"/>
+        <line x1="46" y1="52" x2="114" y2="52" stroke={C.sky} strokeWidth="1" strokeDasharray="3 3"/>
+        <text x="80" y="96" textAnchor="middle" fontSize="8" fill={C.textMid} fontFamily="sans-serif">top-down view</text>
+      </svg>
+    ),
   },
   {
     id: "belly",
     label: "Belly & Undercoat",
-    icon: "↓",
-    instruction: "Have your dog lay on their back. Hold camera 18 inches above. Flash ON. Groin, belly, and chest all need to be in frame.",
-    guide: "Dog on back · Full belly · Flash on",
+    shortLabel: "Belly",
+    tip: "Gently roll your dog onto their back. Hold phone about 18 inches above. Capture chest to groin.",
+    svgGuide: (
+      <svg viewBox="0 0 160 100" width="100%" style={{ borderRadius: "8px", display: "block" }}>
+        <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
+        {/* Dog on back - lighter belly */}
+        <ellipse cx="80" cy="54" rx="40" ry="24" fill="#e8c9b0" />
+        {/* Legs up */}
+        <ellipse cx="52" cy="36" rx="8" ry="14" fill="#c9a48e" transform="rotate(-20 52 36)"/>
+        <ellipse cx="108" cy="36" rx="8" ry="14" fill="#c9a48e" transform="rotate(20 108 36)"/>
+        <ellipse cx="48" cy="72" rx="8" ry="14" fill="#c9a48e" transform="rotate(15 48 72)"/>
+        <ellipse cx="112" cy="72" rx="8" ry="14" fill="#c9a48e" transform="rotate(-15 112 72)"/>
+        {/* Camera crosshair */}
+        <circle cx="80" cy="54" r="28" fill="none" stroke={C.sky} strokeWidth="1.5" strokeDasharray="4 3"/>
+        <text x="80" y="96" textAnchor="middle" fontSize="8" fill={C.textMid} fontFamily="sans-serif">dog on back · belly up</text>
+      </svg>
+    ),
   },
   {
     id: "ears",
     label: "Ears (Both Sides)",
-    icon: "◁",
-    instruction: "Fold the ear back gently to expose the inner flap. Get 8–10 inches close. Flash ON. Inner ear skin must be clearly visible.",
-    guide: "Ear folded back · Inner skin visible · 8–10 in",
+    shortLabel: "Ears",
+    tip: "Fold one ear back to show the inner flap. Hold phone 8–10 inches away. Repeat for the other ear.",
+    svgGuide: (
+      <svg viewBox="0 0 160 100" width="100%" style={{ borderRadius: "8px", display: "block" }}>
+        <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
+        {/* Ear close-up */}
+        <ellipse cx="80" cy="55" rx="44" ry="36" fill="#c9a48e" />
+        {/* Inner ear */}
+        <ellipse cx="80" cy="58" rx="30" ry="24" fill="#e8b090" />
+        <ellipse cx="80" cy="60" rx="18" ry="14" fill="#d49070" />
+        {/* Fold indicator */}
+        <path d="M36 30 Q80 10 124 30" stroke={C.sky} strokeWidth="2" fill="none" strokeDasharray="4 3"/>
+        <text x="80" y="18" textAnchor="middle" fontSize="8" fill={C.skyDark} fontFamily="sans-serif">fold ear back</text>
+        <text x="80" y="96" textAnchor="middle" fontSize="8" fill={C.textMid} fontFamily="sans-serif">inner flap visible · 8–10 in away</text>
+      </svg>
+    ),
   },
   {
     id: "paws",
     label: "Paws & Between Toes",
-    icon: "✦",
-    instruction: "Hold a paw and gently spread the toes. Camera 6–8 inches away. Flash ON. Skin between toes and paw pads must be visible.",
-    guide: "Toes spread · Skin visible · Flash on",
+    shortLabel: "Paws",
+    tip: "Hold a paw and gently spread the toes apart. Hold phone 6–8 inches away. Capture the skin between toes.",
+    svgGuide: (
+      <svg viewBox="0 0 160 100" width="100%" style={{ borderRadius: "8px", display: "block" }}>
+        <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
+        {/* Paw pad */}
+        <ellipse cx="80" cy="62" rx="30" ry="24" fill="#c9a48e" />
+        {/* Toe beans */}
+        <ellipse cx="56" cy="42" rx="11" ry="12" fill="#b8907a" />
+        <ellipse cx="74" cy="36" rx="11" ry="12" fill="#b8907a" />
+        <ellipse cx="93" cy="36" rx="11" ry="12" fill="#b8907a" />
+        <ellipse cx="110" cy="42" rx="11" ry="12" fill="#b8907a" />
+        {/* Between-toe indicators */}
+        <line x1="66" y1="50" x2="72" y2="56" stroke={C.sky} strokeWidth="1.5"/>
+        <line x1="80" y1="48" x2="80" y2="56" stroke={C.sky} strokeWidth="1.5"/>
+        <line x1="94" y1="50" x2="88" y2="56" stroke={C.sky} strokeWidth="1.5"/>
+        <text x="80" y="96" textAnchor="middle" fontSize="8" fill={C.textMid} fontFamily="sans-serif">toes spread · 6–8 in away</text>
+      </svg>
+    ),
   },
   {
     id: "face",
     label: "Face & Muzzle",
-    icon: "◉",
-    instruction: "Have your dog face you at eye level. Hold camera 12 inches away. Flash ON. Muzzle skin, eyes, and forehead all need to be in frame.",
-    guide: "Facing camera · Eye level · 12 in · Flash on",
+    shortLabel: "Face",
+    tip: "Get your dog to face you at eye level. Hold phone about 12 inches away. Capture muzzle, eyes, and forehead.",
+    svgGuide: (
+      <svg viewBox="0 0 160 100" width="100%" style={{ borderRadius: "8px", display: "block" }}>
+        <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
+        {/* Head */}
+        <ellipse cx="80" cy="52" rx="38" ry="40" fill="#c9a48e" />
+        {/* Ears */}
+        <ellipse cx="44" cy="36" rx="12" ry="18" fill="#a07860" />
+        <ellipse cx="116" cy="36" rx="12" ry="18" fill="#a07860" />
+        {/* Eyes */}
+        <circle cx="63" cy="44" r="7" fill="#3a2810" />
+        <circle cx="97" cy="44" r="7" fill="#3a2810" />
+        <circle cx="65" cy="42" r="2" fill="white" />
+        <circle cx="99" cy="42" r="2" fill="white" />
+        {/* Muzzle */}
+        <ellipse cx="80" cy="64" rx="22" ry="16" fill="#b8907a" />
+        <ellipse cx="80" cy="60" rx="10" ry="6" fill="#8a6050" />
+        {/* Framing box */}
+        <rect x="34" y="18" width="92" height="72" rx="4" fill="none" stroke={C.sky} strokeWidth="1.5" strokeDasharray="4 3"/>
+        <text x="80" y="96" textAnchor="middle" fontSize="8" fill={C.textMid} fontFamily="sans-serif">facing you · eye level · 12 in</text>
+      </svg>
+    ),
   },
 ];
 
@@ -63,26 +142,16 @@ const DIET_OPTIONS = [
 
 const WEEKS = ["Baseline", "Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"];
 
-// ── API ──────────────────────────────────────────────────────────────────────
-async function analyzePhoto(imageBase64, zone, isValidation, dogInfo, weekLabel) {
-  const systemPrompt = isValidation
-    ? `You are a veterinary photo quality assessor. Determine if a submitted dog photo is usable for skin and coat health analysis.
-Evaluate for: lighting quality, focus/sharpness, correct body area, appropriate distance, flash usage.
-Respond ONLY with valid JSON: {"valid": true/false, "reason": "specific reason if invalid", "tip": "one specific actionable fix if invalid", "confidence": 0-100}
-If valid, set reason and tip to "". Be strict — blurry, dark, or incorrectly framed photos must be rejected with specific, helpful guidance.`
-    : `You are a veterinary nutritionist AI specializing in canine skin and coat health. Analyze this dog photo of the ${zone.label} area.
-Dog info: ${JSON.stringify(dogInfo)}. This is their ${weekLabel} photo.
-Assess coat shine/luster, skin condition (redness, dryness, flaking, hotspots), coat density and texture, any visible irritation.
-Respond ONLY with valid JSON: {"score": 1-10, "observations": ["obs1","obs2","obs3"], "dietSignals": "what this suggests about their diet", "recommendations": "specific dietary or care recommendation", "trend": "improving/stable/declining/baseline"}`;
-
+// ── API — analysis only, no validation gate ───────────────────────────────────
+async function analyzePhoto(imageBase64, zone, dogInfo, weekLabel) {
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
-  "Content-Type": "application/json",
-  "x-api-key": import.meta.env.VITE_ANTHROPIC_KEY,
-  "anthropic-version": "2023-06-01",
-  "anthropic-dangerous-direct-browser-access": "true",
-},
+      "Content-Type": "application/json",
+      "x-api-key": import.meta.env.VITE_ANTHROPIC_KEY,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true",
+    },
     body: JSON.stringify({
       model: "claude-sonnet-4-20250514",
       max_tokens: 1000,
@@ -90,9 +159,12 @@ Respond ONLY with valid JSON: {"score": 1-10, "observations": ["obs1","obs2","ob
         role: "user",
         content: [
           { type: "image", source: { type: "base64", media_type: "image/jpeg", data: imageBase64 } },
-          { type: "text", text: isValidation
-            ? `Check if this photo of the dog's ${zone.label} meets quality standards. Required: ${zone.guide}`
-            : `Analyze this ${zone.label} photo for skin and coat health indicators.` }
+          { type: "text", text: `You are a veterinary nutritionist AI specializing in canine skin and coat health.
+Analyze this dog photo of the ${zone.label} area. Dog info: ${JSON.stringify(dogInfo)}. This is their ${weekLabel} photo.
+Do your best even if the photo quality is imperfect — note any limitations but still provide useful analysis.
+Assess: coat shine/luster, skin condition (redness, dryness, flaking, hotspots), coat density and texture.
+Respond ONLY with valid JSON (no markdown, no extra text):
+{"score": 1-10, "observations": ["obs1","obs2","obs3"], "dietSignals": "what this suggests about their diet", "recommendations": "specific dietary or care recommendation", "trend": "improving/stable/declining/baseline", "photoNote": "brief note if photo quality limited the analysis, otherwise empty string"}` }
         ]
       }]
     })
@@ -103,118 +175,21 @@ Respond ONLY with valid JSON: {"score": 1-10, "observations": ["obs1","obs2","ob
   return JSON.parse(clean);
 }
 
-// ── Shared Styles ─────────────────────────────────────────────────────────────
+// ── Styles ────────────────────────────────────────────────────────────────────
 const S = {
-  page: {
-    minHeight: "100vh",
-    background: C.fog,
-    fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif",
-    color: C.text,
-  },
-  header: {
-    background: C.forest,
-    padding: "16px 20px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  logo: {
-    fontFamily: "'DM Serif Display', Georgia, serif",
-    fontSize: "22px",
-    color: C.white,
-    letterSpacing: "0.04em",
-  },
-  logoSub: {
-    fontSize: "11px",
-    color: C.skyLight,
-    letterSpacing: "0.12em",
-    textTransform: "uppercase",
-    fontWeight: "500",
-  },
-  body: {
-    maxWidth: "480px",
-    margin: "0 auto",
-    padding: "20px 16px 40px",
-  },
-  card: {
-    background: C.white,
-    borderRadius: "16px",
-    padding: "20px",
-    marginBottom: "12px",
-    border: `1px solid rgba(60,92,83,0.1)`,
-  },
-  cardForest: {
-    background: C.forest,
-    borderRadius: "16px",
-    padding: "20px",
-    marginBottom: "12px",
-  },
-  label: {
-    fontSize: "11px",
-    fontWeight: "600",
-    letterSpacing: "0.1em",
-    textTransform: "uppercase",
-    color: C.textLight,
-    marginBottom: "6px",
-  },
-  input: {
-    width: "100%",
-    padding: "11px 14px",
-    borderRadius: "10px",
-    border: `1.5px solid rgba(60,92,83,0.2)`,
-    fontSize: "15px",
-    fontFamily: "'DM Sans', sans-serif",
-    color: C.text,
-    background: C.white,
-    outline: "none",
-    boxSizing: "border-box",
-    marginBottom: "10px",
-    transition: "border-color 0.2s",
-  },
-  btnPrimary: {
-    width: "100%",
-    padding: "14px",
-    borderRadius: "12px",
-    border: "none",
-    background: C.forest,
-    color: C.white,
-    fontSize: "15px",
-    fontWeight: "600",
-    cursor: "pointer",
-    fontFamily: "'DM Sans', sans-serif",
-    letterSpacing: "0.02em",
-    transition: "background 0.2s",
-  },
-  btnSecondary: {
-    width: "100%",
-    padding: "13px",
-    borderRadius: "12px",
-    border: `1.5px solid ${C.forest}`,
-    background: "transparent",
-    color: C.forest,
-    fontSize: "15px",
-    fontWeight: "600",
-    cursor: "pointer",
-    fontFamily: "'DM Sans', sans-serif",
-    marginTop: "8px",
-  },
-  btnEmber: {
-    width: "100%",
-    padding: "14px",
-    borderRadius: "12px",
-    border: "none",
-    background: C.ember,
-    color: C.white,
-    fontSize: "15px",
-    fontWeight: "600",
-    cursor: "pointer",
-    fontFamily: "'DM Sans', sans-serif",
-    marginTop: "8px",
-  },
+  page: { minHeight: "100vh", background: C.fog, fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif", color: C.text },
+  header: { background: C.forest, padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" },
+  logo: { fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "22px", color: C.white, letterSpacing: "0.04em" },
+  logoSub: { fontSize: "11px", color: C.skyLight, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: "500" },
+  body: { maxWidth: "480px", margin: "0 auto", padding: "20px 16px 40px" },
+  card: { background: C.white, borderRadius: "16px", padding: "20px", marginBottom: "12px", border: `1px solid rgba(60,92,83,0.1)` },
+  cardForest: { background: C.forest, borderRadius: "16px", padding: "20px", marginBottom: "12px" },
+  label: { fontSize: "11px", fontWeight: "600", letterSpacing: "0.1em", textTransform: "uppercase", color: C.textLight, marginBottom: "6px" },
+  input: { width: "100%", padding: "11px 14px", borderRadius: "10px", border: `1.5px solid rgba(60,92,83,0.2)`, fontSize: "15px", fontFamily: "'DM Sans', sans-serif", color: C.text, background: C.white, outline: "none", boxSizing: "border-box", marginBottom: "10px" },
+  btnPrimary: { width: "100%", padding: "14px", borderRadius: "12px", border: "none", background: C.forest, color: C.white, fontSize: "15px", fontWeight: "600", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.02em" },
 };
 
-// ── Components ────────────────────────────────────────────────────────────────
-
+// ── Header ────────────────────────────────────────────────────────────────────
 function Header({ dogName, week }) {
   return (
     <div style={S.header}>
@@ -233,155 +208,163 @@ function Header({ dogName, week }) {
   );
 }
 
-function FlashBanner() {
-  return (
-    <div style={{
-      background: C.ember,
-      borderRadius: "12px",
-      padding: "12px 16px",
-      display: "flex",
-      alignItems: "center",
-      gap: "12px",
-      marginBottom: "14px",
-    }}>
-      <div style={{
-        width: "32px", height: "32px", borderRadius: "50%",
-        background: "rgba(255,255,255,0.2)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: "16px", flexShrink: 0,
-      }}>⚡</div>
-      <div>
-        <div style={{ fontWeight: "700", color: C.white, fontSize: "13px", letterSpacing: "0.04em" }}>ENABLE FLASH BEFORE EVERY PHOTO</div>
-        <div style={{ color: "rgba(255,255,255,0.85)", fontSize: "12px", marginTop: "2px" }}>Flash is required for accurate skin and coat analysis</div>
-      </div>
-    </div>
-  );
-}
-
-function ProgressDots({ zones, photoStates }) {
-  return (
-    <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-      {zones.map(z => {
-        const s = photoStates[z.id];
-        const bg = s === "valid" ? C.sky : s === "invalid" ? C.ember : "rgba(60,92,83,0.15)";
-        return (
-          <div key={z.id} style={{ flex: 1, height: "5px", borderRadius: "3px", background: bg, transition: "background 0.3s" }} />
-        );
-      })}
-    </div>
-  );
-}
-
-function PhotoZoneCard({ zone, photo, onUpload, status, feedback, isAnalyzing }) {
+// ── One-at-a-time guided photo capture ────────────────────────────────────────
+function PhotoCapture({ zones, onComplete, weekLabel }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [photos, setPhotos] = useState({});
+  const [previews, setPreviews] = useState({});
   const fileRef = useRef();
+
+  const zone = zones[currentIndex];
+  const isLast = currentIndex === zones.length - 1;
+  const hasPhoto = !!photos[zone.id];
 
   const handleFile = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => onUpload(zone.id, file, reader.result.split(",")[1]);
+    reader.onload = () => {
+      const base64 = reader.result.split(",")[1];
+      const previewUrl = URL.createObjectURL(file);
+      setPhotos(p => ({ ...p, [zone.id]: base64 }));
+      setPreviews(p => ({ ...p, [zone.id]: previewUrl }));
+    };
     reader.readAsDataURL(file);
   };
 
-  const borderColor = status === "valid" ? C.sky : status === "invalid" ? C.ember : "rgba(60,92,83,0.15)";
-  const bgColor = status === "valid" ? "#f0f8fb" : status === "invalid" ? "#fdf4f0" : C.white;
+  const handleNext = () => {
+    if (isLast) {
+      onComplete(photos);
+    } else {
+      setCurrentIndex(i => i + 1);
+    }
+  };
+
+  const handleRetake = () => {
+    setPhotos(p => { const n = { ...p }; delete n[zone.id]; return n; });
+    setPreviews(p => { const n = { ...p }; delete n[zone.id]; return n; });
+    setTimeout(() => fileRef.current?.click(), 100);
+  };
 
   return (
-    <div style={{
-      border: `1.5px solid ${borderColor}`,
-      borderRadius: "14px",
-      padding: "16px",
-      background: bgColor,
-      marginBottom: "10px",
-      transition: "all 0.25s ease",
-    }}>
-      {/* Zone header */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
-        <div style={{
-          width: "34px", height: "34px", borderRadius: "8px",
-          background: C.forest,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          color: C.white, fontSize: "14px", fontWeight: "700", flexShrink: 0,
-        }}>{zone.icon}</div>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontWeight: "700", fontSize: "14px", color: C.text }}>{zone.label}</div>
-          <div style={{ fontSize: "11px", color: C.textLight, letterSpacing: "0.04em" }}>{zone.guide}</div>
+    <div>
+      {/* Progress bar */}
+      <div style={{ ...S.card, padding: "16px 20px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+          <div style={{ fontSize: "13px", fontWeight: "600", color: C.textMid }}>
+            Photo {currentIndex + 1} of {zones.length}
+          </div>
+          <div style={{ fontSize: "13px", color: C.textLight }}>{zone.label}</div>
         </div>
-        {status === "valid" && (
-          <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: C.sky, display: "flex", alignItems: "center", justifyContent: "center", color: C.white, fontSize: "13px" }}>✓</div>
-        )}
+        <div style={{ display: "flex", gap: "5px" }}>
+          {zones.map((z, i) => (
+            <div key={z.id} style={{
+              flex: 1, height: "5px", borderRadius: "3px",
+              background: i < currentIndex ? C.forest : i === currentIndex ? C.sky : "rgba(60,92,83,0.12)",
+              transition: "background 0.3s",
+            }} />
+          ))}
+        </div>
       </div>
 
-      {/* How-to instruction */}
+      {/* Flash reminder — compact */}
       <div style={{
-        background: `rgba(114,170,185,0.12)`,
-        border: `1px solid rgba(114,170,185,0.3)`,
-        borderRadius: "10px",
-        padding: "10px 12px",
-        marginBottom: "10px",
-        fontSize: "13px",
-        color: C.forestDark,
-        lineHeight: "1.55",
+        background: C.ember, borderRadius: "10px", padding: "10px 14px",
+        display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px",
       }}>
-        <span style={{ fontWeight: "600", color: C.sky }}>How to take this photo — </span>
-        {zone.instruction}
+        <span style={{ fontSize: "16px" }}>⚡</span>
+        <div style={{ fontSize: "13px", color: C.white, fontWeight: "600" }}>
+          Enable flash on your camera before taking this photo
+        </div>
       </div>
 
-      {/* Rejection feedback */}
-      {status === "invalid" && feedback && (
+      {/* Zone card */}
+      <div style={S.card}>
+        {/* SVG guide */}
+        <div style={{ marginBottom: "14px" }}>
+          {zone.svgGuide}
+        </div>
+
+        {/* Tip */}
         <div style={{
-          background: `rgba(204,102,51,0.08)`,
-          border: `1px solid rgba(204,102,51,0.3)`,
-          borderRadius: "10px",
-          padding: "10px 12px",
-          marginBottom: "10px",
-          fontSize: "13px",
-          lineHeight: "1.55",
+          background: `rgba(114,170,185,0.1)`, border: `1px solid rgba(114,170,185,0.25)`,
+          borderRadius: "10px", padding: "11px 14px", marginBottom: "14px",
+          fontSize: "13px", color: C.forestDark || C.text, lineHeight: "1.55",
         }}>
-          <div style={{ fontWeight: "700", color: C.emberDark, marginBottom: "4px" }}>✕  What's wrong</div>
-          <div style={{ color: C.ember, marginBottom: "6px" }}>{feedback.reason}</div>
-          <div style={{ fontWeight: "700", color: C.forestDark, marginBottom: "2px" }}>→  How to fix it</div>
-          <div style={{ color: C.text }}>{feedback.tip}</div>
+          <span style={{ fontWeight: "700", color: C.sky }}>Position guide — </span>
+          {zone.tip}
+        </div>
+
+        {/* Preview or upload area */}
+        {hasPhoto ? (
+          <div>
+            <img
+              src={previews[zone.id]}
+              alt={zone.label}
+              style={{ width: "100%", borderRadius: "10px", maxHeight: "200px", objectFit: "cover", display: "block", marginBottom: "10px" }}
+            />
+            <div style={{ display: "flex", gap: "8px" }}>
+              <button
+                onClick={handleRetake}
+                style={{ ...S.btnPrimary, background: "transparent", color: C.forest, border: `1.5px solid ${C.forest}`, flex: 1 }}
+              >
+                Retake
+              </button>
+              <button
+                onClick={handleNext}
+                style={{ ...S.btnPrimary, flex: 2, background: C.forest }}
+              >
+                {isLast ? "Run Analysis →" : `Next: ${zones[currentIndex + 1]?.shortLabel} →`}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div
+              onClick={() => fileRef.current?.click()}
+              style={{
+                border: `2px dashed rgba(60,92,83,0.25)`,
+                borderRadius: "12px",
+                padding: "32px 20px",
+                textAlign: "center",
+                cursor: "pointer",
+                background: `rgba(60,92,83,0.03)`,
+                marginBottom: "10px",
+              }}
+            >
+              <div style={{ fontSize: "32px", marginBottom: "8px" }}>📷</div>
+              <div style={{ fontSize: "15px", fontWeight: "600", color: C.forest, marginBottom: "4px" }}>
+                Tap to upload photo
+              </div>
+              <div style={{ fontSize: "12px", color: C.textLight }}>
+                Photo from camera roll or take new
+              </div>
+            </div>
+          </div>
+        )}
+
+        <input ref={fileRef} type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={handleFile} />
+      </div>
+
+      {/* Already uploaded thumbnails */}
+      {Object.keys(previews).length > 0 && (
+        <div style={{ ...S.card, padding: "14px 16px" }}>
+          <div style={S.label}>Uploaded so far</div>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            {zones.slice(0, currentIndex + 1).map(z => previews[z.id] && (
+              <div key={z.id} style={{ position: "relative" }}>
+                <img src={previews[z.id]} alt={z.label} style={{ width: "56px", height: "56px", borderRadius: "8px", objectFit: "cover", border: `2px solid ${C.sky}` }} />
+                <div style={{ position: "absolute", bottom: "2px", left: "2px", right: "2px", background: "rgba(0,0,0,0.5)", borderRadius: "4px", fontSize: "8px", color: "white", textAlign: "center", padding: "1px" }}>{z.shortLabel}</div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
-
-      {/* Analyzing spinner */}
-      {isAnalyzing && (
-        <div style={{ textAlign: "center", padding: "10px", color: C.sky, fontSize: "13px", fontWeight: "600", letterSpacing: "0.04em" }}>
-          Checking photo quality...
-        </div>
-      )}
-
-      {/* Preview thumbnail */}
-      {status === "valid" && photo && (
-        <div style={{ borderRadius: "8px", overflow: "hidden", marginBottom: "10px", maxHeight: "110px" }}>
-          <img src={URL.createObjectURL(photo)} alt={zone.label} style={{ width: "100%", objectFit: "cover", maxHeight: "110px" }} />
-        </div>
-      )}
-
-      <input ref={fileRef} type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={handleFile} />
-      <button
-        onClick={() => fileRef.current.click()}
-        style={{
-          width: "100%",
-          padding: "10px",
-          borderRadius: "10px",
-          border: "none",
-          background: status === "valid" ? `rgba(114,170,185,0.2)` : C.forest,
-          color: status === "valid" ? C.skyDark : C.white,
-          fontWeight: "600",
-          fontSize: "14px",
-          cursor: "pointer",
-          fontFamily: "'DM Sans', sans-serif",
-          letterSpacing: "0.02em",
-        }}
-      >
-        {status === "valid" ? "Retake photo" : status === "invalid" ? "Retake photo" : "Upload photo"}
-      </button>
     </div>
   );
 }
 
+// ── Score ring ────────────────────────────────────────────────────────────────
 function ScoreRing({ score, size = 80, stroke = 7 }) {
   const r = (size / 2) - stroke;
   const circ = 2 * Math.PI * r;
@@ -389,58 +372,44 @@ function ScoreRing({ score, size = 80, stroke = 7 }) {
   const color = score >= 8 ? C.sky : score >= 6 ? C.forest : C.ember;
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={`rgba(60,92,83,0.1)`} strokeWidth={stroke} />
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(60,92,83,0.1)" strokeWidth={stroke} />
       <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={stroke}
         strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round"
-        transform={`rotate(-90 ${size/2} ${size/2})`} style={{ transition: "stroke-dashoffset 0.8s ease" }} />
+        transform={`rotate(-90 ${size/2} ${size/2})`} />
     </svg>
   );
 }
 
-function WeekNav({ history, currentWeek, onSelect }) {
-  return (
-    <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "14px" }}>
-      {history.sort((a, b) => a.week - b.week).map(entry => (
-        <button
-          key={entry.week}
-          onClick={() => onSelect(entry.week)}
-          style={{
-            padding: "6px 14px",
-            borderRadius: "20px",
-            border: `1.5px solid ${entry.week === currentWeek ? C.forest : "rgba(60,92,83,0.2)"}`,
-            background: entry.week === currentWeek ? C.forest : "transparent",
-            color: entry.week === currentWeek ? C.white : C.textMid,
-            fontSize: "13px",
-            fontWeight: "600",
-            cursor: "pointer",
-            fontFamily: "'DM Sans', sans-serif",
-            letterSpacing: "0.02em",
-          }}
-        >{entry.weekLabel}</button>
-      ))}
-    </div>
-  );
-}
-
-function AnalysisResults({ results, weekLabel, dogInfo, history, onSelectWeek, currentWeek, onNextWeek }) {
-  const avgScore = results.length
-    ? parseFloat((results.reduce((a, b) => a + (b.score || 0), 0) / results.length).toFixed(1))
+// ── Results ───────────────────────────────────────────────────────────────────
+function AnalysisResults({ results, weekLabel, dogInfo, history, currentWeek, onSelectWeek, onNextWeek }) {
+  const validResults = results.filter(r => r.score);
+  const avgScore = validResults.length
+    ? parseFloat((validResults.reduce((a, b) => a + (b.score || 0), 0) / validResults.length).toFixed(1))
     : 0;
-  const scoreLabel = avgScore >= 8.5 ? "Excellent" : avgScore >= 7 ? "Good" : avgScore >= 5 ? "Fair" : "Needs attention";
-  const trendColor = avgScore >= 8 ? C.sky : avgScore >= 6 ? C.forest : C.ember;
+  const scoreLabel = avgScore >= 9 ? "Excellent" : avgScore >= 7.5 ? "Good" : avgScore >= 6 ? "Fair" : "Needs attention";
 
   return (
     <div>
-      {history.length > 1 && <WeekNav history={history} currentWeek={currentWeek} onSelect={onSelectWeek} />}
+      {/* Week pills */}
+      {history.length > 1 && (
+        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "14px" }}>
+          {history.sort((a, b) => a.week - b.week).map(entry => (
+            <button key={entry.week} onClick={() => onSelectWeek(entry.week)} style={{
+              padding: "6px 14px", borderRadius: "20px",
+              border: `1.5px solid ${entry.week === currentWeek ? C.forest : "rgba(60,92,83,0.2)"}`,
+              background: entry.week === currentWeek ? C.forest : "transparent",
+              color: entry.week === currentWeek ? C.white : C.textMid,
+              fontSize: "13px", fontWeight: "600", cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+            }}>{entry.weekLabel}</button>
+          ))}
+        </div>
+      )}
 
       {/* Score hero */}
       <div style={{ ...S.cardForest, display: "flex", alignItems: "center", gap: "20px" }}>
         <div style={{ position: "relative", flexShrink: 0 }}>
           <ScoreRing score={avgScore} size={84} stroke={7} />
-          <div style={{
-            position: "absolute", inset: 0, display: "flex", flexDirection: "column",
-            alignItems: "center", justifyContent: "center",
-          }}>
+          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
             <span style={{ fontSize: "22px", fontWeight: "700", color: C.white }}>{avgScore}</span>
             <span style={{ fontSize: "10px", color: C.skyLight }}>/ 10</span>
           </div>
@@ -461,49 +430,53 @@ function AnalysisResults({ results, weekLabel, dogInfo, history, onSelectWeek, c
           const zone = PHOTO_ZONES.find(z => z.id === r.zoneId);
           const barColor = r.score >= 8 ? C.sky : r.score >= 6 ? C.forest : C.ember;
           return (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
-              <div style={{ fontSize: "12px", color: C.textMid, width: "80px", flexShrink: 0 }}>{zone?.label?.split(" ")[0] || ""}</div>
-              <div style={{ flex: 1, height: "6px", borderRadius: "3px", background: "rgba(60,92,83,0.1)", overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${r.score * 10}%`, background: barColor, borderRadius: "3px", transition: "width 0.8s ease" }} />
+            <div key={i} style={{ marginBottom: "10px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{ fontSize: "12px", color: C.textMid, width: "68px", flexShrink: 0 }}>{zone?.shortLabel}</div>
+                <div style={{ flex: 1, height: "6px", borderRadius: "3px", background: "rgba(60,92,83,0.1)", overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: `${(r.score || 0) * 10}%`, background: barColor, borderRadius: "3px", transition: "width 0.8s ease" }} />
+                </div>
+                <div style={{ fontSize: "13px", fontWeight: "700", color: barColor, width: "24px", textAlign: "right" }}>{r.score}</div>
               </div>
-              <div style={{ fontSize: "13px", fontWeight: "700", color: barColor, width: "24px", textAlign: "right" }}>{r.score}</div>
+              {r.photoNote && (
+                <div style={{ fontSize: "11px", color: C.textLight, marginTop: "3px", paddingLeft: "78px" }}>
+                  ℹ {r.photoNote}
+                </div>
+              )}
             </div>
           );
         })}
       </div>
 
-      {/* Observations */}
+      {/* Findings */}
       <div style={S.card}>
         <div style={S.label}>Key findings</div>
-        {results.map((r, i) =>
-          r.observations?.map((obs, j) => (
-            <div key={`${i}-${j}`} style={{ display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "8px" }}>
-              <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: C.sky, flexShrink: 0, marginTop: "6px" }} />
-              <div style={{ fontSize: "13px", color: C.textMid, lineHeight: "1.55" }}>{obs}</div>
-            </div>
-          ))
-        )}
+        {results.flatMap(r => r.observations || []).map((obs, i) => (
+          <div key={i} style={{ display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "8px" }}>
+            <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: C.sky, flexShrink: 0, marginTop: "6px" }} />
+            <div style={{ fontSize: "13px", color: C.textMid, lineHeight: "1.55" }}>{obs}</div>
+          </div>
+        ))}
       </div>
 
       {/* Diet signal */}
       <div style={{ ...S.card, background: `rgba(114,170,185,0.1)`, border: `1px solid rgba(114,170,185,0.25)` }}>
         <div style={{ ...S.label, color: C.skyDark }}>Diet signal</div>
-        <div style={{ fontSize: "14px", color: C.forestDark, lineHeight: "1.6" }}>
-          {results[0]?.dietSignals || "—"}
+        <div style={{ fontSize: "14px", color: C.text, lineHeight: "1.6" }}>
+          {results.find(r => r.dietSignals)?.dietSignals || "—"}
         </div>
       </div>
 
       {/* Recommendations */}
-      <div style={{ ...S.card, background: C.forest }}>
+      <div style={{ ...S.cardForest }}>
         <div style={{ ...S.label, color: C.skyLight }}>Recommendations</div>
         <div style={{ fontSize: "14px", color: C.fog, lineHeight: "1.6" }}>
           {results.map(r => r.recommendations).filter(Boolean).join(" ")}
         </div>
       </div>
 
-      {/* Disclaimer */}
       <div style={{ fontSize: "12px", color: C.textLight, lineHeight: "1.6", padding: "12px 4px" }}>
-        ⚕ This tool is AI-assisted and for informational purposes only. It does not replace professional veterinary diagnosis or treatment. Consult your vet for any health concerns.
+        ⚕ AI-assisted screening only. Does not replace professional veterinary diagnosis. Consult your vet for any health concerns.
       </div>
 
       {currentWeek < 6 && (
@@ -520,74 +493,41 @@ export default function NoblDogTracker() {
   const [step, setStep] = useState("onboarding");
   const [dogInfo, setDogInfo] = useState({ name: "", breed: "", age: "", diet: "", dietBrand: "", dietDuration: "" });
   const [currentWeek, setCurrentWeek] = useState(0);
-  const [photoStates, setPhotoStates] = useState({});
-  const [photoFiles, setPhotoFiles]   = useState({});
-  const [photoBase64, setPhotoBase64] = useState({});
-  const [photoFeedback, setPhotoFeedback] = useState({});
-  const [analyzingZone, setAnalyzingZone] = useState(null);
   const [isRunningAnalysis, setIsRunningAnalysis] = useState(false);
   const [analysisPhase, setAnalysisPhase] = useState("");
+  const [analysisProgress, setAnalysisProgress] = useState(0);
   const [weekResults, setWeekResults] = useState({});
   const [history, setHistory] = useState([]);
   const [viewingWeek, setViewingWeek] = useState(0);
 
-  const handlePhotoUpload = useCallback(async (zoneId, file, base64) => {
-    setPhotoFiles(p => ({ ...p, [zoneId]: file }));
-    setPhotoBase64(p => ({ ...p, [zoneId]: base64 }));
-    setPhotoStates(p => ({ ...p, [zoneId]: "analyzing" }));
-    setAnalyzingZone(zoneId);
-
-    const zone = PHOTO_ZONES.find(z => z.id === zoneId);
-    try {
-      const result = await analyzePhoto(base64, zone, true, dogInfo, WEEKS[currentWeek]);
-      if (result.valid) {
-        setPhotoStates(p => ({ ...p, [zoneId]: "valid" }));
-        setPhotoFeedback(p => ({ ...p, [zoneId]: null }));
-      } else {
-        setPhotoStates(p => ({ ...p, [zoneId]: "invalid" }));
-        setPhotoFeedback(p => ({ ...p, [zoneId]: result }));
-      }
-    } catch {
-      setPhotoStates(p => ({ ...p, [zoneId]: "invalid" }));
-      setPhotoFeedback(p => ({ ...p, [zoneId]: {
-        reason: "We couldn't assess this photo.",
-        tip: "Make sure it's well-lit with flash enabled, in sharp focus, and clearly shows the correct area. Try holding the camera steady and closer.",
-      }}));
-    }
-    setAnalyzingZone(null);
-  }, [dogInfo, currentWeek]);
-
-  const allValid = PHOTO_ZONES.every(z => photoStates[z.id] === "valid");
-  const validCount = PHOTO_ZONES.filter(z => photoStates[z.id] === "valid").length;
-
-  const runFullAnalysis = async () => {
+  const handlePhotosComplete = useCallback(async (photos) => {
     setIsRunningAnalysis(true);
     setStep("analyzing");
     const results = [];
-    for (const zone of PHOTO_ZONES) {
+
+    for (let i = 0; i < PHOTO_ZONES.length; i++) {
+      const zone = PHOTO_ZONES[i];
       setAnalysisPhase(`Analyzing ${zone.label}...`);
+      setAnalysisProgress(Math.round((i / PHOTO_ZONES.length) * 100));
       try {
-        const result = await analyzePhoto(photoBase64[zone.id], zone, false, dogInfo, WEEKS[currentWeek]);
+        const result = await analyzePhoto(photos[zone.id], zone, dogInfo, WEEKS[currentWeek]);
         results.push({ zoneId: zone.id, ...result });
       } catch {
-        results.push({ zoneId: zone.id, score: 5, observations: ["Analysis could not be completed for this area."], dietSignals: "", recommendations: "Please retake this photo and try again." });
+        results.push({ zoneId: zone.id, score: 5, observations: ["Analysis unavailable for this area."], dietSignals: "", recommendations: "", photoNote: "Could not process this photo.", trend: "baseline" });
       }
     }
+
+    setAnalysisProgress(100);
     const entry = { week: currentWeek, weekLabel: WEEKS[currentWeek], results, timestamp: new Date().toLocaleDateString() };
     setWeekResults(r => ({ ...r, [currentWeek]: results }));
     setHistory(h => [...h.filter(e => e.week !== currentWeek), entry]);
     setViewingWeek(currentWeek);
     setIsRunningAnalysis(false);
     setStep("results");
-  };
+  }, [dogInfo, currentWeek]);
 
   const startNextWeek = () => {
-    const next = Math.min(currentWeek + 1, 6);
-    setCurrentWeek(next);
-    setPhotoStates({});
-    setPhotoFiles({});
-    setPhotoBase64({});
-    setPhotoFeedback({});
+    setCurrentWeek(w => Math.min(w + 1, 6));
     setStep("photos");
   };
 
@@ -597,15 +537,11 @@ export default function NoblDogTracker() {
   return (
     <div style={S.page}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
-
-      <Header
-        dogName={dogInfo.name || null}
-        week={step !== "onboarding" ? currentWeek : undefined}
-      />
+      <Header dogName={dogInfo.name || null} week={step !== "onboarding" ? currentWeek : undefined} />
 
       <div style={S.body}>
 
-        {/* ── ONBOARDING ── */}
+        {/* ONBOARDING */}
         {step === "onboarding" && (
           <div>
             <div style={{ ...S.card, marginTop: "4px" }}>
@@ -613,30 +549,23 @@ export default function NoblDogTracker() {
                 Track your dog's skin & coat health
               </div>
               <div style={{ fontSize: "14px", color: C.textMid, lineHeight: "1.6", marginBottom: "20px" }}>
-                Upload baseline photos today, then check in weekly for 5–6 weeks. NOBL's AI will track changes and tell you how your dog's diet is — or isn't — working.
+                Upload baseline photos today, then check in weekly for 5–6 weeks. NOBL's AI tracks changes and shows how your dog's diet is working.
               </div>
-
               <div style={S.label}>Dog's name</div>
               <input style={S.input} placeholder="e.g. Buddy" value={dogInfo.name} onChange={e => updateDog("name", e.target.value)} />
-
               <div style={S.label}>Breed</div>
               <input style={S.input} placeholder="e.g. Golden Retriever" value={dogInfo.breed} onChange={e => updateDog("breed", e.target.value)} />
-
               <div style={S.label}>Age</div>
               <input style={S.input} placeholder="e.g. 4 years" value={dogInfo.age} onChange={e => updateDog("age", e.target.value)} />
-
               <div style={S.label}>Current diet type</div>
               <select style={{ ...S.input, background: C.white }} value={dogInfo.diet} onChange={e => updateDog("diet", e.target.value)}>
                 <option value="">Select diet type...</option>
                 {DIET_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
               </select>
-
               <div style={S.label}>Food brand</div>
               <input style={S.input} placeholder="e.g. Royal Canin, Orijen" value={dogInfo.dietBrand} onChange={e => updateDog("dietBrand", e.target.value)} />
-
               <div style={S.label}>How long on this diet?</div>
               <input style={S.input} placeholder="e.g. 6 weeks" value={dogInfo.dietDuration} onChange={e => updateDog("dietDuration", e.target.value)} />
-
               <button
                 style={{ ...S.btnPrimary, opacity: canStart ? 1 : 0.45, marginTop: "8px" }}
                 disabled={!canStart}
@@ -646,86 +575,57 @@ export default function NoblDogTracker() {
               </button>
             </div>
 
-            {/* What we track */}
             <div style={S.card}>
-              <div style={S.label}>5 key areas we monitor</div>
-              {PHOTO_ZONES.map(z => (
-                <div key={z.id} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-                  <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: `rgba(60,92,83,0.1)`, display: "flex", alignItems: "center", justifyContent: "center", color: C.forest, fontSize: "12px", fontWeight: "700", flexShrink: 0 }}>
-                    {z.icon}
-                  </div>
-                  <div>
-                    <div style={{ fontSize: "13px", fontWeight: "600", color: C.text }}>{z.label}</div>
-                    <div style={{ fontSize: "11px", color: C.textLight }}>{z.guide}</div>
-                  </div>
-                </div>
-              ))}
+              <div style={S.label}>5 areas we monitor</div>
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                {PHOTO_ZONES.map(z => (
+                  <div key={z.id} style={{
+                    background: `rgba(60,92,83,0.07)`, borderRadius: "8px",
+                    padding: "6px 12px", fontSize: "13px", color: C.forest, fontWeight: "500",
+                  }}>{z.shortLabel}</div>
+                ))}
+              </div>
             </div>
           </div>
         )}
 
-        {/* ── PHOTOS ── */}
+        {/* PHOTOS — one at a time */}
         {step === "photos" && (
-          <div>
-            <div style={{ ...S.card, marginTop: "4px" }}>
-              <div style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "18px", color: C.forest, marginBottom: "4px" }}>
-                {WEEKS[currentWeek]} Photos
-              </div>
-              <div style={{ fontSize: "13px", color: C.textMid, marginBottom: "14px" }}>
-                Each photo is checked instantly. If something's off, you'll see exactly what to fix — no guessing.
-              </div>
-              <ProgressDots zones={PHOTO_ZONES} photoStates={photoStates} />
-              <div style={{ fontSize: "12px", color: C.textLight, marginTop: "6px" }}>
-                {validCount} of {PHOTO_ZONES.length} approved
-              </div>
-            </div>
-
-            <FlashBanner />
-
-            {PHOTO_ZONES.map(zone => (
-              <PhotoZoneCard
-                key={zone.id}
-                zone={zone}
-                photo={photoFiles[zone.id]}
-                onUpload={handlePhotoUpload}
-                status={photoStates[zone.id] || "idle"}
-                feedback={photoFeedback[zone.id]}
-                isAnalyzing={analyzingZone === zone.id}
-              />
-            ))}
-
-            <button
-              style={{ ...S.btnPrimary, opacity: allValid ? 1 : 0.4, marginTop: "8px" }}
-              disabled={!allValid}
-              onClick={runFullAnalysis}
-            >
-              {allValid ? "Run Full Analysis →" : `${validCount} / ${PHOTO_ZONES.length} photos approved`}
-            </button>
-          </div>
+          <PhotoCapture
+            zones={PHOTO_ZONES}
+            weekLabel={WEEKS[currentWeek]}
+            onComplete={handlePhotosComplete}
+          />
         )}
 
-        {/* ── ANALYZING ── */}
+        {/* ANALYZING */}
         {step === "analyzing" && (
           <div style={{ ...S.card, textAlign: "center", padding: "48px 24px", marginTop: "4px" }}>
-            <div style={{
-              width: "56px", height: "56px", borderRadius: "50%",
-              border: `3px solid rgba(60,92,83,0.15)`,
-              borderTopColor: C.sky,
-              margin: "0 auto 20px",
-              animation: "spin 1s linear infinite",
-            }} />
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            {/* Progress ring */}
+            <div style={{ position: "relative", width: "72px", height: "72px", margin: "0 auto 20px" }}>
+              <svg width="72" height="72" viewBox="0 0 72 72">
+                <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(60,92,83,0.1)" strokeWidth="6"/>
+                <circle cx="36" cy="36" r="30" fill="none" stroke={C.sky} strokeWidth="6"
+                  strokeDasharray={`${2 * Math.PI * 30}`}
+                  strokeDashoffset={`${2 * Math.PI * 30 * (1 - analysisProgress / 100)}`}
+                  strokeLinecap="round" transform="rotate(-90 36 36)"
+                  style={{ transition: "stroke-dashoffset 0.5s ease" }}
+                />
+              </svg>
+              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "13px", fontWeight: "600", color: C.forest }}>
+                {analysisProgress}%
+              </div>
+            </div>
             <div style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: "20px", color: C.forest, marginBottom: "8px" }}>
               Analyzing {dogInfo.name}'s health
             </div>
-            <div style={{ fontSize: "14px", color: C.textMid, lineHeight: "1.6", marginBottom: "12px" }}>
-              {analysisPhase || "Running analysis across all 5 areas..."}
+            <div style={{ fontSize: "14px", color: C.textMid, lineHeight: "1.6" }}>
+              {analysisPhase || "Starting analysis..."}
             </div>
-            <div style={{ fontSize: "12px", color: C.textLight }}>This takes about 30–60 seconds</div>
           </div>
         )}
 
-        {/* ── RESULTS ── */}
+        {/* RESULTS */}
         {step === "results" && weekResults[viewingWeek] && (
           <AnalysisResults
             results={weekResults[viewingWeek]}
@@ -733,7 +633,7 @@ export default function NoblDogTracker() {
             dogInfo={dogInfo}
             history={history}
             currentWeek={viewingWeek}
-            onSelectWeek={(w) => setViewingWeek(w)}
+            onSelectWeek={setViewingWeek}
             onNextWeek={startNextWeek}
           />
         )}
