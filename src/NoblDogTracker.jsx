@@ -13,7 +13,7 @@ const C = {
   textLight: "#7a9990",
 };
 
-const LOGO_SRC = "data:image/png;base64,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";
+const LOGO_SRC = "data:image/png;base64,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";
 
 const DOG_BREEDS = [
   "Mixed / Unknown","Labrador Retriever","Golden Retriever","French Bulldog","German Shepherd",
@@ -33,8 +33,7 @@ const DOG_BREEDS = [
 ];
 
 const PHOTO_ZONES = [
-  {
-    id:"back", label:"Back & Top Coat", shortLabel:"Back",
+  { id:"back", label:"Back & Top Coat", shortLabel:"Back",
     tip:"Stand your dog naturally. Hold phone directly above their back, about 2 feet up. Capture neck to tail.",
     checks:["Full back visible from neck to tail","Top-down angle","Flash enabled"],
     svgGuide:(<svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
@@ -48,8 +47,7 @@ const PHOTO_ZONES = [
       <text x="80" y="96" textAnchor="middle" fontSize="8" fill="#4a6660" fontFamily="sans-serif">top-down view</text>
     </svg>),
   },
-  {
-    id:"belly", label:"Belly & Undercoat", shortLabel:"Belly",
+  { id:"belly", label:"Belly & Undercoat", shortLabel:"Belly",
     tip:"Gently roll your dog onto their back. Hold phone about 18 inches above. Capture chest to groin.",
     checks:["Dog on back with belly facing up","Full belly area visible","Flash enabled"],
     svgGuide:(<svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
@@ -63,8 +61,7 @@ const PHOTO_ZONES = [
       <text x="80" y="96" textAnchor="middle" fontSize="8" fill="#4a6660" fontFamily="sans-serif">dog on back · belly up</text>
     </svg>),
   },
-  {
-    id:"ears", label:"Ears (Both Sides)", shortLabel:"Ears",
+  { id:"ears", label:"Ears (Both Sides)", shortLabel:"Ears",
     tip:"Fold one ear back to show the inner flap. Hold phone 8–10 inches away.",
     checks:["Ear folded back, inner flap visible","8–10 inches from ear","Flash enabled"],
     svgGuide:(<svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
@@ -76,8 +73,7 @@ const PHOTO_ZONES = [
       <text x="80" y="96" textAnchor="middle" fontSize="8" fill="#4a6660" fontFamily="sans-serif">inner flap visible · 8–10 in</text>
     </svg>),
   },
-  {
-    id:"paws", label:"Paws & Between Toes", shortLabel:"Paws",
+  { id:"paws", label:"Paws & Between Toes", shortLabel:"Paws",
     tip:"Spread the toes gently. Hold phone 6–8 inches away. Capture skin between toes.",
     checks:["Toes spread apart","Skin between toes visible","6–8 inches away"],
     svgGuide:(<svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
@@ -91,8 +87,7 @@ const PHOTO_ZONES = [
       <text x="80" y="96" textAnchor="middle" fontSize="8" fill="#4a6660" fontFamily="sans-serif">toes spread · 6–8 in away</text>
     </svg>),
   },
-  {
-    id:"face", label:"Face & Muzzle", shortLabel:"Face",
+  { id:"face", label:"Face & Muzzle", shortLabel:"Face",
     tip:"Dog facing you at eye level. Hold phone about 12 inches away.",
     checks:["Dog facing camera","At eye level","Muzzle and eyes in frame"],
     svgGuide:(<svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
@@ -110,78 +105,33 @@ const PHOTO_ZONES = [
 
 const WEEKS = ["Baseline","Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"];
 
-// ── Parse recommendations (JSON array from AI) ────────────────────────────────
-function parseRecs(raw) {
-  if (!raw) return [];
-  if (Array.isArray(raw)) return raw;
-  try { return JSON.parse(raw); } catch { return []; }
-}
-
-// ── Merge recommendations across zones — deduplicate by header ────────────────
-function mergeRecs(results) {
-  const seen = new Map(); // header → merged effects
-  const closing = [];
-
-  results.forEach(r => {
-    const recs = parseRecs(r.recommendations);
-    recs.forEach(rec => {
-      if (!rec.header) return;
-      const isClosing = rec.header.toLowerCase().includes("nobl") || rec.header.toLowerCase().includes("personalized");
-      if (isClosing) { if (closing.length === 0) closing.push(rec); return; }
-
-      const key = rec.header.toLowerCase().replace(/[^a-z0-9]/g,"").substring(0,30);
-      if (seen.has(key)) {
-        // Merge effects — add any new ones not already present
-        const existing = seen.get(key);
-        const existingEffectsNorm = existing.effects.map(e => e.toLowerCase().replace(/[^a-z]/g,"").substring(0,40));
-        (rec.effects || []).forEach(effect => {
-          const norm = effect.toLowerCase().replace(/[^a-z]/g,"").substring(0,40);
-          if (!existingEffectsNorm.some(e => e.includes(norm.substring(0,20)) || norm.includes(e.substring(0,20)))) {
-            existing.effects.push(effect);
-          }
-        });
-      } else {
-        seen.set(key, { header: rec.header, dose: rec.dose || "", effects: [...(rec.effects || [])] });
-      }
-    });
-  });
-
-  return [...seen.values(), ...closing];
-}
-
 // ── HEIC detection ────────────────────────────────────────────────────────────
 function isHeicFile(file) {
-  const name = (file.name || "").toLowerCase();
-  const type = (file.type || "").toLowerCase();
-  return name.endsWith(".heic") || name.endsWith(".heif") || type.includes("heic") || type.includes("heif");
+  const name = (file.name||"").toLowerCase(), type = (file.type||"").toLowerCase();
+  return name.endsWith(".heic")||name.endsWith(".heif")||type.includes("heic")||type.includes("heif");
 }
 
-// ── Soft client-side check ────────────────────────────────────────────────────
+// ── Client-side soft check ────────────────────────────────────────────────────
 async function softCheck(file) {
-  if (isHeicFile(file)) {
-    return {
-      isHeic: true,
-      heicMessage: "iPhone HEIC photos aren't supported — but the fix takes 30 seconds!\n\n1. Go to iPhone Settings → Camera → Formats\n2. Select \"Most Compatible\"\n3. Take a new photo — it will save as JPEG and work perfectly\n\nOr take a screenshot of the existing photo and upload that instead."
-    };
-  }
+  if (isHeicFile(file)) return { isHeic:true, heicMessage:"iPhone HEIC photos aren't supported — but the fix takes 30 seconds!\n\n1. Go to iPhone Settings → Camera → Formats\n2. Select \"Most Compatible\"\n3. Take a new photo — it will save as JPEG and work perfectly\n\nOr take a screenshot of the existing photo and upload that instead." };
   const warnings = [];
-  if (file.size < 15000) { warnings.push("This file is very small — the photo may not have saved correctly. Please try again."); return {isHeic:false,warnings}; }
+  if (file.size < 15000) { warnings.push("File is very small — the photo may not have saved correctly. Please try again."); return {isHeic:false,warnings}; }
   return new Promise(resolve => {
-    const img = new Image(); const url = URL.createObjectURL(file);
-    img.onload = () => {
-      if (img.width < 150 || img.height < 150) warnings.push("Resolution is very low. Try getting a bit closer or using a higher quality setting.");
-      const canvas = document.createElement("canvas"); canvas.width=32; canvas.height=32;
-      const ctx = canvas.getContext("2d"); ctx.drawImage(img,0,0,32,32);
-      const d = ctx.getImageData(0,0,32,32).data;
+    const img=new Image(), url=URL.createObjectURL(file);
+    img.onload=()=>{
+      if(img.width<150||img.height<150) warnings.push("Resolution is very low. Try getting a bit closer.");
+      const canvas=document.createElement("canvas"); canvas.width=32; canvas.height=32;
+      const ctx=canvas.getContext("2d"); ctx.drawImage(img,0,0,32,32);
+      const d=ctx.getImageData(0,0,32,32).data;
       let r=0,g=0,b=0; const n=d.length/4;
       for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2];}
       let rv=0,gv=0,bv=0; const rm=r/n,gm=g/n,bm=b/n;
       for(let i=0;i<d.length;i+=4){rv+=(d[i]-rm)**2;gv+=(d[i+1]-gm)**2;bv+=(d[i+2]-bm)**2;}
       const variance=(rv+gv+bv)/(3*n), brightness=(rm+gm+bm)/3;
       if(variance<120){
-        if(brightness<35) warnings.push("Photo is too dark — please enable your camera flash and try again.");
-        else if(brightness>230) warnings.push("Photo is too bright. Try adjusting your angle or lighting.");
-        else warnings.push("Not much detail visible — make sure the correct body area fills most of the frame.");
+        if(brightness<35) warnings.push("Photo is too dark — please enable your camera flash.");
+        else if(brightness>230) warnings.push("Photo is too bright — try adjusting your angle.");
+        else warnings.push("Not much detail visible — make sure the correct area fills most of the frame.");
       }
       URL.revokeObjectURL(url); resolve({isHeic:false,warnings});
     };
@@ -191,46 +141,49 @@ async function softCheck(file) {
 }
 
 // ── API calls ─────────────────────────────────────────────────────────────────
-async function validatePhotoWithAI(base64, zone) {
-  try {
-    const res = await fetch("/.netlify/functions/analyze", {
-      method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ imageBase64:base64, zoneLabel:zone.label, dogInfo:{}, weekLabel:"Baseline", validateOnly:true }),
-    });
-    if (!res.ok) return { usable:true, issue:"", suggestion:"" };
-    return await res.json();
-  } catch { return { usable:true, issue:"", suggestion:"" }; }
-}
-
-async function callAnalyze(imageBase64, zone, dogInfo, weekLabel) {
+async function apiCall(body) {
   const res = await fetch("/.netlify/functions/analyze", {
-    method:"POST", headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ imageBase64, zoneLabel:zone.label, dogInfo, weekLabel }),
+    method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body),
   });
-  if (!res.ok) { const err = await res.json().catch(()=>({})); throw new Error(err.error || `Server error ${res.status}`); }
+  if (!res.ok) { const e=await res.json().catch(()=>({})); throw new Error(e.error||`Server error ${res.status}`); }
   return res.json();
 }
 
+async function validatePhoto(base64, zone) {
+  try { return await apiCall({ mode:"validate", imageBase64:base64, zoneLabel:zone.label }); }
+  catch { return { usable:true, issue:"", suggestion:"" }; }
+}
+
+async function analyzeZone(imageBase64, zone, dogInfo, weekLabel) {
+  return apiCall({ mode:"analyze", imageBase64, zoneLabel:zone.label, dogInfo, weekLabel });
+}
+
+async function consolidateRecs(zoneResults, dogInfo, weekLabel) {
+  return apiCall({ mode:"consolidate", zoneResults, dogInfo, weekLabel });
+}
+
 // ── PDF ───────────────────────────────────────────────────────────────────────
-async function generatePDF(dogInfo, results, weekLabel) {
+async function generatePDF(dogInfo, results, consolidated, weekLabel) {
   if (!window.jspdf) {
-    await new Promise((resolve, reject) => {
-      const s = document.createElement("script");
-      s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
-      s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
+    await new Promise((resolve,reject)=>{
+      const s=document.createElement("script");
+      s.src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+      s.onload=resolve; s.onerror=reject; document.head.appendChild(s);
     });
   }
-  const {jsPDF} = window.jspdf; const doc = new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
+  const {jsPDF}=window.jspdf; const doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
   const W=210,H=297,m=18; let y=0;
 
+  // Header
   doc.setFillColor(60,92,83); doc.rect(0,0,W,40,"F");
   try { doc.addImage(LOGO_SRC,"PNG",m,6,50,26); }
-  catch(e) { doc.setTextColor(204,102,51); doc.setFontSize(22); doc.setFont("helvetica","bold"); doc.text("NOBL",m,26); }
+  catch { doc.setTextColor(204,102,51); doc.setFontSize(22); doc.setFont("helvetica","bold"); doc.text("NOBL",m,26); }
   doc.setTextColor(168,205,216); doc.setFontSize(8); doc.setFont("helvetica","normal"); doc.text("COAT & SKIN TRACKER",W-m,14,{align:"right"});
   doc.setTextColor(255,255,255); doc.setFontSize(11); doc.text(weekLabel+" Report",W-m,24,{align:"right"});
   doc.setFontSize(8); doc.setTextColor(168,205,216); doc.text(new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}),W-m,32,{align:"right"});
   y=52;
 
+  // Dog info
   doc.setFillColor(241,241,240); doc.roundedRect(m,y,W-m*2,26,3,3,"F");
   doc.setTextColor(30,46,42); doc.setFontSize(13); doc.setFont("helvetica","bold"); doc.text(dogInfo.name||"—",m+6,y+10);
   doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(74,102,96);
@@ -238,7 +191,8 @@ async function generatePDF(dogInfo, results, weekLabel) {
   if(dogInfo.email){doc.setTextColor(77,142,160);doc.text(dogInfo.email,W-m,y+19,{align:"right"});}
   y+=34;
 
-  const scores=results.filter(r=>r.score&&r.score>0).map(r=>r.score);
+  // Score
+  const scores=results.filter(r=>r.score>0).map(r=>r.score);
   const avg=scores.length?(scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1):"—";
   const sn=parseFloat(avg); const lbl=sn>=9?"Excellent":sn>=7.5?"Good":sn>=6?"Fair":"Needs Attention";
   const sc=sn>=8?[114,170,185]:sn>=6?[60,92,83]:[204,102,51];
@@ -260,10 +214,7 @@ async function generatePDF(dogInfo, results, weekLabel) {
       doc.setFont("helvetica","bold"); doc.setTextColor(...bc); doc.text(String(s2),W-m,y+4,{align:"right"});
     } else { doc.setTextColor(122,153,144); doc.setFont("helvetica","italic"); doc.text("Not analyzed",m+20,y+4); }
     y+=10;
-    if(r.photoNote&&r.photoNote.trim()){
-      doc.setFontSize(7.5); doc.setFont("helvetica","italic"); doc.setTextColor(122,153,144);
-      const nl=doc.splitTextToSize("i  "+r.photoNote,bw+16); doc.text(nl,m+20,y); y+=nl.length*5;
-    }
+    if(r.photoNote?.trim()){doc.setFontSize(7.5);doc.setFont("helvetica","italic");doc.setTextColor(122,153,144);const nl=doc.splitTextToSize("i  "+r.photoNote,bw+16);doc.text(nl,m+20,y);y+=nl.length*5;}
   });
   y+=4;
 
@@ -276,8 +227,7 @@ async function generatePDF(dogInfo, results, weekLabel) {
     doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.setTextColor(60,92,83); doc.text(zone?.label||"",m,y); y+=5;
     if(!r.score||r.score===0){
       doc.setFont("helvetica","italic"); doc.setTextColor(122,153,144);
-      const note=r.photoNote||"Photo could not be analyzed.";
-      const nl=doc.splitTextToSize("  "+note,W-m*2-4); doc.text(nl,m+2,y); y+=nl.length*5+4;
+      const nl=doc.splitTextToSize("  "+(r.photoNote||"Photo could not be analyzed."),W-m*2-4); doc.text(nl,m+2,y); y+=nl.length*5+4;
     } else {
       (r.observations||[]).forEach(obs=>{
         doc.setFillColor(114,170,185); doc.circle(m+2,y+1,1.2,"F");
@@ -288,68 +238,59 @@ async function generatePDF(dogInfo, results, weekLabel) {
     }
   });
 
-  // Diet signal
-  const ds=results.find(r=>r.dietSignals)?.dietSignals;
-  if(ds){
-    const dsL=doc.splitTextToSize(ds,W-m*2-14),dsH=dsL.length*5+14;
-    if(y+dsH>H-m){doc.addPage();y=m;}
-    doc.setFillColor(232,242,246); doc.roundedRect(m,y,W-m*2,dsH,3,3,"F");
+  // Nutritional picture
+  const np=consolidated?.nutritionalPicture;
+  if(np){
+    const npL=doc.splitTextToSize(np,W-m*2-14),npH=npL.length*5+14;
+    if(y+npH>H-m){doc.addPage();y=m;}
+    doc.setFillColor(232,242,246); doc.roundedRect(m,y,W-m*2,npH,3,3,"F");
     doc.setFontSize(8); doc.setFont("helvetica","bold"); doc.setTextColor(77,142,160); doc.text("NUTRITIONAL PICTURE",m+6,y+7);
-    doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(30,46,42); doc.text(dsL,m+6,y+13); y+=dsH+8;
+    doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(30,46,42); doc.text(npL,m+6,y+13); y+=npH+8;
   }
 
   // Categorical recommendations
-  const mergedRecs = mergeRecs(results);
-  const actionRecs = mergedRecs.filter(r => !r.header.toLowerCase().includes("nobl") && !r.header.toLowerCase().includes("personalized"));
-  const closingRec = mergedRecs.find(r => r.header.toLowerCase().includes("nobl") || r.header.toLowerCase().includes("personalized"));
+  const recs=(consolidated?.recommendations||[]).filter(r=>!r.header?.toLowerCase().includes("nobl")&&!r.header?.toLowerCase().includes("personalized"));
+  const closing=consolidated?.recommendations?.find(r=>r.header?.toLowerCase().includes("nobl")||r.header?.toLowerCase().includes("personalized"));
 
-  if(actionRecs.length){
+  if(recs.length){
     if(y+16>H-m){doc.addPage();y=m;}
     doc.setFillColor(60,92,83); doc.rect(m,y,W-m*2,7,"F");
     doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont("helvetica","bold"); doc.text("RECOMMENDATIONS",m+4,y+5); y+=12;
-
-    actionRecs.forEach(rec=>{
+    recs.forEach(rec=>{
       if(y>H-50){doc.addPage();y=m;}
-      // Header
       doc.setFontSize(10); doc.setFont("helvetica","bold"); doc.setTextColor(60,92,83);
-      const hLines=doc.splitTextToSize(rec.header,W-m*2-4); doc.text(hLines,m,y); y+=hLines.length*5+2;
-      // Dose
+      const hL=doc.splitTextToSize(rec.header,W-m*2-4); doc.text(hL,m,y); y+=hL.length*5+2;
       if(rec.dose){
         doc.setFontSize(8.5); doc.setFont("helvetica","italic"); doc.setTextColor(77,142,160);
-        const dLines=doc.splitTextToSize(rec.dose,W-m*2-6); doc.text(dLines,m+4,y); y+=dLines.length*5+2;
+        const dL=doc.splitTextToSize(rec.dose,W-m*2-6); doc.text(dL,m+4,y); y+=dL.length*5+2;
       }
-      // Effects
       (rec.effects||[]).forEach(effect=>{
         doc.setFillColor(114,170,185); doc.circle(m+6,y+1,1,"F");
         doc.setFont("helvetica","normal"); doc.setFontSize(8.5); doc.setTextColor(74,102,96);
-        const eLines=doc.splitTextToSize(effect,W-m*2-14); doc.text(eLines,m+10,y+1); y+=eLines.length*4.5+1;
+        const eL=doc.splitTextToSize(effect,W-m*2-14); doc.text(eL,m+10,y+1); y+=eL.length*4.5+1;
       });
-      y+=5;
+      y+=6;
     });
   }
 
-  // Care actions (non-nutrient bullets extracted from effects)
-  // Vet disclaimer
-  if(y+20>H-m){doc.addPage();y=m;}
-  doc.setFillColor(241,241,240); doc.roundedRect(m,y,W-m*2,14,3,3,"F");
+  // Combined disclaimer + NOBL closing box
+  if(y+30>H-m){doc.addPage();y=m;}
+  const disclaimerText="These recommendations are directional and intended as a starting point. Please consult with your veterinarian before making significant changes to your dog's diet or supplement routine.";
+  const noblText=closing?.effects?.[0]||`For personalized help, email us at customerservice@NOBLFoods.com — we'd love to find the right NOBL product for ${dogInfo.name||"your dog"}!`;
+  const combinedLines=[...doc.splitTextToSize(disclaimerText,W-m*2-14),"",`★  ${noblText}`];
+  const boxH=combinedLines.length*5+14;
+  doc.setFillColor(232,242,246); doc.roundedRect(m,y,W-m*2,boxH,3,3,"F");
   doc.setFontSize(8); doc.setFont("helvetica","italic"); doc.setTextColor(74,102,96);
-  const disclaimer="These recommendations are directional and intended as a starting point. Please consult with your veterinarian before making significant changes to your dog's diet or supplement routine.";
-  const dLines=doc.splitTextToSize(disclaimer,W-m*2-10); doc.text(dLines,m+5,y+5); y+=16;
+  const dLines=doc.splitTextToSize(disclaimerText,W-m*2-14); doc.text(dLines,m+6,y+7);
+  doc.setTextColor(77,142,160); doc.text(`★  ${noblText}`,m+6,y+7+dLines.length*5+4);
+  y+=boxH+6;
 
-  // NOBL closing
-  if(closingRec){
-    if(y+16>H-m){doc.addPage();y=m;}
-    doc.setFontSize(8.5); doc.setFont("helvetica","italic"); doc.setTextColor(77,142,160);
-    const cLines=doc.splitTextToSize("★ "+(closingRec.effects?.[0]||""),W-m*2); doc.text(cLines,m,y); y+=cLines.length*5+4;
-  }
-
-  // Research note
+  // Citation
   doc.setFontSize(7); doc.setFont("helvetica","italic"); doc.setTextColor(150,160,158);
   doc.text("Nutrient guidance informed by: Watson (J. Nutrition, 1998); Marchegiani et al. (PMC, 2020); Pereira et al. (PMC, 2021).",m,y);
 
   // Footer
-  const pages=doc.getNumberOfPages();
-  for(let p=1;p<=pages;p++){
+  for(let p=1;p<=doc.getNumberOfPages();p++){
     doc.setPage(p); doc.setFillColor(60,92,83); doc.rect(0,H-14,W,14,"F");
     doc.setTextColor(168,205,216); doc.setFontSize(7); doc.setFont("helvetica","normal");
     doc.text("NOBL Coat & Skin Tracker  ·  AI-assisted screening only. Not a substitute for veterinary advice.",m,H-5);
@@ -410,10 +351,10 @@ function PhotoCapture({zones,onComplete}){
     setChecking(true); reset();
     const {isHeic,heicMessage,warnings:w}=await softCheck(file);
     if(isHeic){setChecking(false);setHeicMsg(heicMessage);return;}
-    if(w&&w.length>0){setChecking(false);setWarnings(w);setPendingFile(file);return;}
+    if(w?.length){setChecking(false);setWarnings(w);setPendingFile(file);return;}
     const b64=await new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result.split(",")[1]);r.readAsDataURL(file);});
     setChecking(false);setValidating(true);
-    const validation=await validatePhotoWithAI(b64,zone);
+    const validation=await validatePhoto(b64,zone);
     setValidating(false);
     if(!validation.usable){setAiIssue(validation);setPendingFile(file);setPendingB64(b64);}
     else acceptFile(file,b64);
@@ -433,8 +374,7 @@ function PhotoCapture({zones,onComplete}){
         <div style={{fontSize:"13px",color:C.textLight}}>{zone.label}</div>
       </div>
       <div style={{display:"flex",gap:"5px"}}>
-        {zones.map((z,i)=>(<div key={z.id} style={{flex:1,height:"5px",borderRadius:"3px",
-          background:i<idx?C.forest:i===idx?C.sky:"rgba(60,92,83,0.12)",transition:"background 0.3s"}}/>))}
+        {zones.map((z,i)=>(<div key={z.id} style={{flex:1,height:"5px",borderRadius:"3px",background:i<idx?C.forest:i===idx?C.sky:"rgba(60,92,83,0.12)",transition:"background 0.3s"}}/>))}
       </div>
     </div>
 
@@ -500,10 +440,9 @@ function PhotoCapture({zones,onComplete}){
         <div onClick={()=>fileRef.current?.click()} style={{border:"2px dashed rgba(60,92,83,0.25)",borderRadius:"12px",padding:"32px 20px",textAlign:"center",cursor:"pointer",background:"rgba(60,92,83,0.03)"}}>
           <div style={{fontSize:"30px",marginBottom:"8px"}}>📷</div>
           <div style={{fontSize:"15px",fontWeight:"600",color:C.forest,marginBottom:"4px"}}>Tap to upload photo</div>
-          <div style={{fontSize:"12px",color:C.textLight}}>JPEG or PNG format · Not HEIC</div>
+          <div style={{fontSize:"12px",color:C.textLight}}>JPEG or PNG · Not HEIC</div>
         </div>
       )}
-
       <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" style={{display:"none"}} onChange={handleChange}/>
     </div>
 
@@ -530,17 +469,15 @@ function ScoreRing({score,size=84,stroke=7}){
   </svg>);
 }
 
-// ── Results ───────────────────────────────────────────────────────────────────
-function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelectWeek,onNextWeek}){
+function AnalysisResults({results,consolidated,weekLabel,dogInfo,history,currentWeek,onSelectWeek,onNextWeek}){
   const [pdfLoading,setPdfLoading]=useState(false);
-  const valid=results.filter(r=>r.score&&r.score>0);
+  const valid=results.filter(r=>r.score>0);
   const avg=valid.length?parseFloat((valid.reduce((a,b)=>a+(b.score||0),0)/valid.length).toFixed(1)):0;
   const lbl=avg>=9?"Excellent":avg>=7.5?"Good":avg>=6?"Fair":"Needs Attention";
-  const mergedRecs=mergeRecs(results);
-  const actionRecs=mergedRecs.filter(r=>!r.header.toLowerCase().includes("nobl")&&!r.header.toLowerCase().includes("personalized"));
-  const closingRec=mergedRecs.find(r=>r.header.toLowerCase().includes("nobl")||r.header.toLowerCase().includes("personalized"));
+  const actionRecs=(consolidated?.recommendations||[]).filter(r=>!r.header?.toLowerCase().includes("nobl")&&!r.header?.toLowerCase().includes("personalized"));
+  const closingRec=consolidated?.recommendations?.find(r=>r.header?.toLowerCase().includes("nobl")||r.header?.toLowerCase().includes("personalized"));
 
-  const handlePDF=async()=>{setPdfLoading(true);try{await generatePDF(dogInfo,results,weekLabel);}catch(e){alert("PDF generation failed. Please try again.");}setPdfLoading(false);};
+  const handlePDF=async()=>{setPdfLoading(true);try{await generatePDF(dogInfo,results,consolidated,weekLabel);}catch{alert("PDF generation failed. Please try again.");}setPdfLoading(false);};
 
   return(<div>
     {history.length>1&&(<div style={{display:"flex",gap:"6px",flexWrap:"wrap",marginBottom:"14px"}}>
@@ -552,7 +489,7 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
         fontSize:"13px",fontWeight:"600",cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>{e.weekLabel}</button>))}
     </div>)}
 
-    {/* Score */}
+    {/* Score hero */}
     <div style={{...S.cardForest,display:"flex",alignItems:"center",gap:"20px"}}>
       <div style={{position:"relative",flexShrink:0}}>
         <ScoreRing score={avg}/>
@@ -578,18 +515,16 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
         return(<div key={i} style={{marginBottom:"10px"}}>
           <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
             <div style={{fontSize:"12px",color:C.textMid,width:"68px",flexShrink:0}}>{zone?.shortLabel}</div>
-            {r.score>0?(
-              <><div style={{flex:1,height:"6px",borderRadius:"3px",background:"rgba(60,92,83,0.1)",overflow:"hidden"}}>
+            {r.score>0?(<>
+              <div style={{flex:1,height:"6px",borderRadius:"3px",background:"rgba(60,92,83,0.1)",overflow:"hidden"}}>
                 <div style={{height:"100%",width:`${r.score*10}%`,background:bc,borderRadius:"3px",transition:"width 0.8s ease"}}/>
               </div>
-              <div style={{fontSize:"13px",fontWeight:"700",color:bc,width:"24px",textAlign:"right"}}>{r.score}</div></>
-            ):(
+              <div style={{fontSize:"13px",fontWeight:"700",color:bc,width:"24px",textAlign:"right"}}>{r.score}</div>
+            </>):(
               <div style={{fontSize:"12px",color:C.textLight,fontStyle:"italic"}}>Not analyzed</div>
             )}
           </div>
-          {r.photoNote&&r.photoNote.trim()&&(
-            <div style={{fontSize:"11px",color:C.textLight,marginTop:"4px",paddingLeft:"78px",lineHeight:"1.4"}}>ℹ {r.photoNote}</div>
-          )}
+          {r.photoNote?.trim()&&(<div style={{fontSize:"11px",color:C.textLight,marginTop:"4px",paddingLeft:"78px",lineHeight:"1.4"}}>ℹ {r.photoNote}</div>)}
         </div>);
       })}
     </div>
@@ -603,7 +538,7 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
           <div style={{fontSize:"13px",fontWeight:"700",color:C.forest,marginBottom:"6px",paddingBottom:"4px",borderBottom:"1px solid rgba(60,92,83,0.1)"}}>{zone?.label}</div>
           {(!r.score||r.score===0)?(
             <div style={{fontSize:"13px",color:C.textLight,fontStyle:"italic",paddingLeft:"4px",lineHeight:"1.5"}}>
-              {r.photoNote||"We weren't able to analyze this photo. Please retake it using the guide above — we're sorry for the inconvenience!"}
+              {r.photoNote||"We weren't able to analyze this photo. Our apologies — please try re-uploading using the guide above."}
             </div>
           ):(
             (r.observations||[]).map((obs,j)=>(<div key={j} style={{display:"flex",gap:"10px",alignItems:"flex-start",marginBottom:"6px"}}>
@@ -616,21 +551,18 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
     </div>
 
     {/* Nutritional picture */}
-    <div style={{...S.card,background:"rgba(114,170,185,0.1)",border:"1px solid rgba(114,170,185,0.25)"}}>
+    {consolidated?.nutritionalPicture&&(<div style={{...S.card,background:"rgba(114,170,185,0.1)",border:"1px solid rgba(114,170,185,0.25)"}}>
       <div style={{...S.lbl,color:C.skyDark}}>Nutritional picture</div>
-      <div style={{fontSize:"14px",color:C.text,lineHeight:"1.65"}}>{results.find(r=>r.dietSignals)?.dietSignals||"—"}</div>
-    </div>
+      <div style={{fontSize:"14px",color:C.text,lineHeight:"1.65"}}>{consolidated.nutritionalPicture}</div>
+    </div>)}
 
     {/* Categorical recommendations */}
     {actionRecs.length>0&&(<div style={S.cardForest}>
       <div style={{...S.lbl,color:C.skyLight}}>Recommendations</div>
       {actionRecs.map((rec,i)=>(
         <div key={i} style={{marginBottom:"16px",paddingBottom:"14px",borderBottom:i<actionRecs.length-1?"1px solid rgba(255,255,255,0.1)":"none"}}>
-          {/* Header — "do this" */}
           <div style={{fontSize:"14px",fontWeight:"700",color:C.white,marginBottom:"4px"}}>{rec.header}</div>
-          {/* Dose — how much */}
           {rec.dose&&(<div style={{fontSize:"12px",color:C.skyLight,fontStyle:"italic",marginBottom:"8px",lineHeight:"1.5"}}>{rec.dose}</div>)}
-          {/* Effects — what it helps */}
           {(rec.effects||[]).map((effect,j)=>(<div key={j} style={{display:"flex",gap:"8px",alignItems:"flex-start",marginBottom:"4px"}}>
             <div style={{fontSize:"12px",color:C.skyLight,flexShrink:0,marginTop:"1px"}}>→</div>
             <div style={{fontSize:"13px",color:C.fog,lineHeight:"1.5"}}>{effect}</div>
@@ -639,19 +571,15 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
       ))}
     </div>)}
 
-    {/* Vet disclaimer */}
-    <div style={{...S.card,background:"rgba(114,170,185,0.08)",border:"1px solid rgba(114,170,185,0.2)",padding:"14px 16px",marginBottom:"10px"}}>
-      <div style={{fontSize:"12px",color:C.textMid,lineHeight:"1.65",fontStyle:"italic"}}>
+    {/* Combined disclaimer + NOBL closing — one box */}
+    <div style={{...S.card,background:"rgba(114,170,185,0.08)",border:"1px solid rgba(114,170,185,0.2)",padding:"16px 18px",marginBottom:"12px"}}>
+      <div style={{fontSize:"12px",color:C.textMid,lineHeight:"1.7",fontStyle:"italic",marginBottom:"10px"}}>
         ℹ These recommendations are directional and intended as a starting point. Please consult with your veterinarian before making significant changes to your dog's diet or supplement routine.
       </div>
-    </div>
-
-    {/* NOBL closing */}
-    {closingRec&&(<div style={{...S.card,background:C.forest,padding:"14px 18px",marginBottom:"12px"}}>
-      <div style={{fontSize:"13px",color:C.skyLight,lineHeight:"1.6",fontStyle:"italic"}}>
-        ★ {closingRec.effects?.[0]||"For personalized help, reach out to us at customerservice@NOBLFoods.com!"}
+      <div style={{borderTop:"1px solid rgba(114,170,185,0.3)",paddingTop:"10px",fontSize:"13px",color:C.skyDark,lineHeight:"1.6"}}>
+        ★ {closingRec?.effects?.[0]||`For personalized help finding the right NOBL product for ${dogInfo.name||"your dog"}, email us at customerservice@NOBLFoods.com — we'd love to help!`}
       </div>
-    </div>)}
+    </div>
 
     <button onClick={handlePDF} disabled={pdfLoading} style={{...S.btnSky,display:"flex",alignItems:"center",justifyContent:"center",gap:"8px"}}>
       {pdfLoading?"Generating PDF…":"⬇  Download PDF Report"}
@@ -677,41 +605,59 @@ export default function NoblDogTracker(){
   const [analysisProgress,setAnalysisProgress]=useState(0);
   const [analysisError,setAnalysisError]=useState("");
   const [weekResults,setWeekResults]=useState({});
+  const [weekConsolidated,setWeekConsolidated]=useState({});
   const [history,setHistory]=useState([]);
   const [viewingWeek,setViewingWeek]=useState(0);
 
   const handlePhotosComplete=useCallback(async(photos)=>{
     setStep("analyzing"); setAnalysisError("");
     const results=[];
+
+    // Step 1: Analyze each zone
     for(let i=0;i<PHOTO_ZONES.length;i++){
       const zone=PHOTO_ZONES[i];
       setAnalysisPhase(`Analyzing ${zone.label}...`);
-      setAnalysisProgress(Math.round((i/PHOTO_ZONES.length)*100));
+      setAnalysisProgress(Math.round((i/PHOTO_ZONES.length)*85)); // reserve last 15% for consolidation
+
       if(!photos[zone.id]){
-        results.push({zoneId:zone.id,score:0,observations:[],dietSignals:"",recommendations:"[]",photoNote:"This photo was skipped.",trend:"baseline"});
+        results.push({zoneId:zone.id,zoneLabel:zone.label,score:0,observations:[],skinCoatSignals:[],trend:"baseline",photoNote:"This photo was skipped."});
         continue;
       }
       try{
-        const result=await callAnalyze(photos[zone.id],zone,dogInfo,WEEKS[currentWeek]);
-        results.push({zoneId:zone.id,...result});
+        const result=await analyzeZone(photos[zone.id],zone,dogInfo,WEEKS[currentWeek]);
+        results.push({zoneId:zone.id,zoneLabel:zone.label,...result});
       }catch(err){
-        console.error("Analysis error:",zone.label,err);
-        // Friendly error — no technical details shown to user
-        results.push({zoneId:zone.id,score:0,observations:[],dietSignals:"",recommendations:"[]",
-          photoNote:"We're sorry — our analysis wasn't able to process this photo. Please try again or re-upload the photo.",
-          trend:"baseline"});
+        console.error("Zone analysis error:",zone.label,err);
+        results.push({zoneId:zone.id,zoneLabel:zone.label,score:0,observations:[],skinCoatSignals:[],trend:"baseline",
+          photoNote:"We're sorry — we weren't able to analyze this photo."});
       }
     }
-    setAnalysisProgress(100);
+
     const allFailed=results.every(r=>!r.score||r.score===0);
     if(allFailed){
       setAnalysisError("We're sorry — our analysis service is temporarily unavailable. Please check your connection and try again in a few moments.");
       setStep("error"); return;
     }
-    const entry={week:currentWeek,weekLabel:WEEKS[currentWeek],results,timestamp:new Date().toLocaleDateString()};
+
+    // Step 2: Consolidate recommendations from all zones in ONE call
+    setAnalysisPhase("Building your personalized recommendations...");
+    setAnalysisProgress(90);
+
+    let consolidated = null;
+    try {
+      consolidated = await consolidateRecs(results, dogInfo, WEEKS[currentWeek]);
+    } catch(err) {
+      console.error("Consolidation error:", err);
+      // Non-fatal — show results without recommendations rather than failing
+    }
+
+    setAnalysisProgress(100);
+    const entry={week:currentWeek,weekLabel:WEEKS[currentWeek],results,consolidated,timestamp:new Date().toLocaleDateString()};
     setWeekResults(r=>({...r,[currentWeek]:results}));
+    setWeekConsolidated(c=>({...c,[currentWeek]:consolidated}));
     setHistory(h=>[...h.filter(e=>e.week!==currentWeek),entry]);
-    setViewingWeek(currentWeek); setStep("results");
+    setViewingWeek(currentWeek);
+    setStep("results");
   },[dogInfo,currentWeek]);
 
   const upd=(k,v)=>setDogInfo(d=>({...d,[k]:v}));
@@ -785,9 +731,16 @@ export default function NoblDogTracker(){
       </div>)}
 
       {step==="results"&&weekResults[viewingWeek]&&(
-        <AnalysisResults results={weekResults[viewingWeek]} weekLabel={WEEKS[viewingWeek]} dogInfo={dogInfo}
-          history={history} currentWeek={viewingWeek} onSelectWeek={setViewingWeek}
-          onNextWeek={()=>{setCurrentWeek(w=>Math.min(w+1,6));setStep("photos");}}/>
+        <AnalysisResults
+          results={weekResults[viewingWeek]}
+          consolidated={weekConsolidated[viewingWeek]}
+          weekLabel={WEEKS[viewingWeek]}
+          dogInfo={dogInfo}
+          history={history}
+          currentWeek={viewingWeek}
+          onSelectWeek={w=>{setViewingWeek(w);}}
+          onNextWeek={()=>{setCurrentWeek(w=>Math.min(w+1,6));setStep("photos");}}
+        />
       )}
     </div>
   </div>);
