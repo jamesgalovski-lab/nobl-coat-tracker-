@@ -16,47 +16,40 @@ exports.handler = async (event) => {
       return { statusCode: 400, headers, body: JSON.stringify({ error: "Missing required fields" }) };
     }
 
-    // ── Detect image format from base64 signature ─────────────────────────
     function detectMediaType(b64) {
-      const head = b64.substring(0, 20);
+      const head = b64.substring(0, 16);
       if (head.startsWith("/9j/")) return "image/jpeg";
       if (head.startsWith("iVBORw0KGgo")) return "image/png";
       if (head.startsWith("R0lGOD")) return "image/gif";
       if (head.startsWith("UklGR")) return "image/webp";
-      // HEIC/HEIF starts with ftyp box — base64 of 0x0000001C667479706865 or similar
-      // These decode to "AAAB..." or "AAAC..." patterns
-      if (head.startsWith("AAAB") || head.startsWith("AAAC") || head.startsWith("AAAM")) return "image/heic";
       return "image/jpeg";
     }
 
-    let processedBase64 = imageBase64;
-    let mediaType = detectMediaType(imageBase64);
+    const mediaType = detectMediaType(imageBase64);
 
-    // ── HEIC handling: tell Anthropic it's HEIC or try as JPEG fallback ──
-    // Anthropic does not support HEIC natively. We mark it and handle gracefully.
-    const isHeic = mediaType === "image/heic";
-    if (isHeic) {
-      // Send as jpeg and let Anthropic handle it — modern Claude can sometimes
-      // process HEIC bytes even when labeled jpeg. If it fails we return a
-      // helpful validation error instead of a generic crash.
-      mediaType = "image/jpeg";
-    }
-
-    // ── Validation-only mode (called before full analysis) ────────────────
+    // ── Validation-only mode ──────────────────────────────────────────────
     if (validateOnly) {
-      const validationPrompt = `You are a photo quality checker for a veterinary skin and coat analysis app.
+      const validationPrompt = `You are a photo quality checker for a dog skin and coat health app.
+
 Look at this photo and determine if it is usable for analyzing a dog's ${zoneLabel}.
 
-Check for:
-1. Is a dog clearly visible?
-2. Is the correct body area shown (${zoneLabel})?
-3. Is there enough lighting to see skin/coat detail?
-4. Is the image in focus (not severely blurry)?
+Evaluate these things:
+1. Is a dog (or part of a dog) clearly visible?
+2. Does the photo show the correct body area: ${zoneLabel}?
+3. Is there enough light to make out coat texture and skin color?
+4. Is it in focus enough to see surface detail?
 
-Be LENIENT. A slightly imperfect photo is acceptable. Only reject if it truly cannot be analyzed.
+Important: Be LENIENT. A slightly dark, slightly blurry, or imperfectly framed photo is still usable. 
+Only mark as not usable if the photo genuinely cannot be analyzed at all.
+
+If not usable, explain the problem in plain, friendly language a pet owner would understand — no jargon.
+Give one specific, actionable tip to fix it.
 
 Respond ONLY with valid JSON, no markdown:
-{"usable": true or false, "issue": "one specific problem if not usable, empty string if usable", "suggestion": "one specific fix if not usable, empty string if usable"}`;
+{"usable": true, "issue": "", "suggestion": ""}
+
+If usable: issue and suggestion must be empty strings.
+If not usable: issue = what is wrong (friendly, 1 sentence), suggestion = exactly how to fix it (friendly, 1-2 sentences).`;
 
       const valRes = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
@@ -67,11 +60,11 @@ Respond ONLY with valid JSON, no markdown:
         },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
-          max_tokens: 200,
+          max_tokens: 250,
           messages: [{
             role: "user",
             content: [
-              { type: "image", source: { type: "base64", media_type: mediaType, data: processedBase64 } },
+              { type: "image", source: { type: "base64", media_type: mediaType, data: imageBase64 } },
               { type: "text", text: validationPrompt }
             ]
           }]
@@ -80,49 +73,76 @@ Respond ONLY with valid JSON, no markdown:
 
       if (!valRes.ok) {
         const errText = await valRes.text();
-        // HEIC format rejection from Anthropic
-        if (isHeic || errText.includes("Could not process image") || errText.includes("400")) {
+        if (errText.includes("Could not process image") || valRes.status === 400) {
           return {
             statusCode: 200, headers,
             body: JSON.stringify({
               usable: false,
-              issue: "HEIC photo format is not supported",
-              suggestion: "Open your iPhone Camera app, go to Settings → Camera → Formats and select 'Most Compatible'. This saves photos as JPEG which works with the analyzer. Alternatively, take a screenshot of the photo and upload the screenshot instead."
+              issue: "This image format isn't supported — it looks like an iPhone HEIC file.",
+              suggestion: "On your iPhone, go to Settings → Camera → Formats and choose 'Most Compatible'. Then retake the photo and it will save as JPEG, which works perfectly."
             })
           };
         }
-        return { statusCode: 502, headers, body: JSON.stringify({ error: `API error ${valRes.status}` }) };
+        return { statusCode: 200, headers, body: JSON.stringify({ usable: true, issue: "", suggestion: "" }) };
       }
 
       const valData = await valRes.json();
       const valText = (valData.content || []).map(c => c.text || "").join("").replace(/```json|```/gi, "").trim();
       try {
-        return { statusCode: 200, headers, body: valText };
+        const parsed = JSON.parse(valText);
+        return { statusCode: 200, headers, body: JSON.stringify(parsed) };
       } catch(e) {
         return { statusCode: 200, headers, body: JSON.stringify({ usable: true, issue: "", suggestion: "" }) };
       }
     }
 
     // ── Full analysis mode ────────────────────────────────────────────────
-    const prompt = `You are a veterinary nutritionist AI specializing in canine skin and coat health.
-Analyze this dog photo of the ${zoneLabel} area.
-Dog: name=${dogInfo.name || "unknown"}, breed=${dogInfo.breed || "unknown"}, age=${dogInfo.age || "unknown"}, diet type=${dogInfo.diet || "unknown"}, food brand=${dogInfo.dietBrand || "unspecified"}, on this diet for ${dogInfo.dietDuration || "unknown"}.
-This is their ${weekLabel} photo.
+    const dogName = dogInfo.name || "this dog";
+    const breed = dogInfo.breed || "unknown breed";
+    const age = dogInfo.age || "unknown age";
+    const diet = dogInfo.diet || "unknown diet";
+    const dietBrand = dogInfo.dietBrand || "unspecified brand";
+    const dietDuration = dogInfo.dietDuration || "unknown duration";
 
-INSTRUCTIONS:
-- Analyze what you can see, even if photo quality is imperfect
-- observations: 3-5 specific findings about THIS area only (coat texture, skin color, signs of irritation, moisture, hair density, etc.)
-- dietSignals: focus ONLY on nutritional gaps (fatty acid deficiency, protein adequacy, zinc, vitamin E, omega-3/6 balance, antioxidants, hydration). Do NOT mention specific food formats like kibble, wet food, raw, freeze-dried, etc.
-- recommendations: specific actionable bullet points (use "|" to separate each bullet). Include:
-  * Nutritional gaps to address (fatty acids, specific vitamins/minerals) — no food format mentions
-  * Specific care actions (brushing frequency, nail checks, ear cleaning, etc.)
-  * Do NOT repeat points already made
-  * End with exactly this closing bullet: "For personalized nutrition guidance, email us at customerservice@NOBLFoods.com — we'd love to help find the right NOBL product for ${dogInfo.name || "your dog"}."
-- photoNote: brief note ONLY if quality meaningfully limited analysis, otherwise empty string
-- trend: baseline for first submission, otherwise improving/stable/declining based on comparison
+    const prompt = `You are a friendly veterinary nutrition expert analyzing a dog photo for a consumer health app called NOBL Coat & Skin Tracker.
+
+Dog info: name=${dogName}, breed=${breed}, age=${age}, diet type=${diet}, brand=${dietBrand}, on this diet for ${dietDuration}.
+Photo area: ${zoneLabel}
+Assessment: ${weekLabel}
+
+WHAT TO LOOK FOR in this photo:
+- Coat shine, luster, texture, density
+- Skin color (pink=healthy, red=irritated, grey/dark=concerning)
+- Visible flaking, scaling, or dryness
+- Hair distribution — any thinning, bald patches, or matting
+- Signs of irritation, moisture, or inflammation
+
+WRITING RULES — follow these exactly:
+- Write like a knowledgeable friend, not a scientist. Warm, clear, and encouraging.
+- observations: 3-5 specific things you actually see in THIS photo. Concrete and specific to this area.
+- dietSignals: What nutritional picture does this suggest? Focus on specific nutrients (omega-3 fatty acids, omega-6/linoleic acid, zinc, vitamin E, biotin, protein quality). NO food format mentions (no "kibble", "wet food", "raw", "freeze-dried"). Be specific but conversational.
+- recommendations: Bullet points separated by "|". Each bullet must be:
+  * Specific and actionable — not "add omega-3s" but WHY and WHAT LEVEL
+  * Conversational — explain what the nutrient does in plain English
+  * Include practical guidance levels where relevant (e.g. "look for foods with at least 2-3% omega-6 on the label")
+  * Include specific care actions (brushing, ear cleaning, nail checks, hydration)
+  * Do NOT repeat any point already made in a previous bullet
+  * The LAST bullet must always be exactly: "For personalized help picking a NOBL product that supports ${dogName}'s skin and coat, reach out to us at customerservice@NOBLFoods.com — we'd love to help!"
+
+NUTRIENT CONTEXT (use this knowledge to inform recommendations but write conversationally):
+- Omega-6 (linoleic acid): critical for skin barrier and water retention. Look for 2-4% DM on food label.
+- Omega-3 (EPA+DHA from marine sources): reduces inflammation, improves coat shine. Therapeutic dose: ~50-220mg EPA per kg body weight daily (Watson, J Nutrition 1998; Marchegiani et al., PMC 2020).
+- Zinc: most commonly deficient trace mineral for skin. Essential for hair follicle health and keratinization. Look for 150-250mg/kg DM in food, preferably as zinc methionine for better absorption (Pereira et al., PMC 2021).
+- Vitamin E: protects skin cell membranes, works best paired with fatty acid supplementation.
+- Protein/amino acids: skin and coat are high-turnover tissues. Methionine and cysteine are especially important for coat keratin.
+- Biotin and B vitamins: support keratin production and skin cell metabolism.
+
+- photoNote: ONLY include if the photo quality genuinely prevented you from seeing something important. Be specific about what you couldn't assess and why. If the photo was fine, leave this as an empty string.
+- trend: "baseline" for first submission, otherwise "improving", "stable", or "declining"
+- score: 1-10 where 10 = perfect healthy coat/skin, 1 = severe issues
 
 Respond ONLY with valid JSON, no markdown, no extra text:
-{"score":7,"observations":["finding 1","finding 2","finding 3"],"dietSignals":"nutritional gap analysis only","recommendations":"bullet 1|bullet 2|bullet 3|closing bullet","trend":"baseline","photoNote":""}`;
+{"score":7,"observations":["specific finding 1","specific finding 2","specific finding 3"],"dietSignals":"conversational nutritional insight","recommendations":"bullet 1|bullet 2|bullet 3|closing bullet","trend":"baseline","photoNote":""}`;
 
     const apiRes = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -133,11 +153,11 @@ Respond ONLY with valid JSON, no markdown, no extra text:
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 900,
+        max_tokens: 1200,
         messages: [{
           role: "user",
           content: [
-            { type: "image", source: { type: "base64", media_type: mediaType, data: processedBase64 } },
+            { type: "image", source: { type: "base64", media_type: mediaType, data: imageBase64 } },
             { type: "text", text: prompt }
           ]
         }]
@@ -147,17 +167,16 @@ Respond ONLY with valid JSON, no markdown, no extra text:
     if (!apiRes.ok) {
       const errText = await apiRes.text();
       console.error("Anthropic error:", apiRes.status, errText);
-      // Detect HEIC-related failure
-      if (isHeic || errText.includes("Could not process image")) {
+      if (errText.includes("Could not process image") || apiRes.status === 400) {
         return {
           statusCode: 200, headers,
           body: JSON.stringify({
             score: 0,
-            observations: ["Photo could not be analyzed — HEIC format is not supported."],
+            observations: [],
             dietSignals: "",
-            recommendations: "Retake this photo as JPEG. On iPhone: go to Settings → Camera → Formats → Most Compatible.|Alternatively, take a screenshot of the photo and upload that instead.",
+            recommendations: "",
             trend: "baseline",
-            photoNote: "HEIC format not supported. Please retake as JPEG."
+            photoNote: "This photo could not be processed — it may be in HEIC format (common on iPhones). To fix this: go to iPhone Settings → Camera → Formats → Most Compatible, then retake the photo."
           })
         };
       }
@@ -171,7 +190,7 @@ Respond ONLY with valid JSON, no markdown, no extra text:
     try {
       parsed = JSON.parse(rawText);
     } catch (e) {
-      console.error("Parse error:", e, "Raw:", rawText);
+      console.error("Parse error:", rawText);
       return { statusCode: 502, headers, body: JSON.stringify({ error: "Invalid JSON from AI", raw: rawText }) };
     }
 
