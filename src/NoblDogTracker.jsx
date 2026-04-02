@@ -1,6 +1,5 @@
 import { useState, useRef, useCallback } from "react";
 
-// ── NOBL Brand Colors ─────────────────────────────────────────────────────────
 const C = {
   forest:    "#3C5C53",
   sky:       "#72AAB9",
@@ -14,10 +13,8 @@ const C = {
   textLight: "#7a9990",
 };
 
-// ── NOBL Logo ─────────────────────────────────────────────────────────────────
-const LOGO_SRC = "data:image/png;base64,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";
+const LOGO_SRC = "data:image/png;base64,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";
 
-// ── Dog Breeds ────────────────────────────────────────────────────────────────
 const DOG_BREEDS = [
   "Mixed / Unknown",
   "Labrador Retriever","Golden Retriever","French Bulldog","German Shepherd",
@@ -43,12 +40,11 @@ const DOG_BREEDS = [
   "Portuguese Water Dog","Lagotto Romagnolo","Other",
 ];
 
-// ── Photo Zones ───────────────────────────────────────────────────────────────
 const PHOTO_ZONES = [
   {
     id:"back", label:"Back & Top Coat", shortLabel:"Back",
     tip:"Stand your dog naturally. Hold phone directly above their back, about 2 feet up. Capture neck to tail.",
-    checks:["Full back visible from neck to tail","Top-down angle (above the dog)","Flash enabled for good lighting"],
+    checks:["Full back visible from neck to tail","Top-down angle","Flash enabled"],
     svgGuide:(
       <svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
         <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
@@ -67,7 +63,7 @@ const PHOTO_ZONES = [
   {
     id:"belly", label:"Belly & Undercoat", shortLabel:"Belly",
     tip:"Gently roll your dog onto their back. Hold phone about 18 inches above. Capture chest to groin.",
-    checks:["Dog is on their back with belly facing up","Full belly area from chest to groin visible","Flash enabled for good lighting"],
+    checks:["Dog on back, belly facing up","Full belly area visible","Flash enabled"],
     svgGuide:(
       <svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
         <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
@@ -83,8 +79,8 @@ const PHOTO_ZONES = [
   },
   {
     id:"ears", label:"Ears (Both Sides)", shortLabel:"Ears",
-    tip:"Fold one ear back to show the inner flap. Hold phone 8–10 inches away. Repeat for the other ear.",
-    checks:["Ear folded back showing inner skin","Inner ear flap clearly visible","8–10 inches from the ear"],
+    tip:"Fold one ear back to show the inner flap. Hold phone 8–10 inches away.",
+    checks:["Ear folded back, inner flap visible","8–10 inches from ear","Flash enabled"],
     svgGuide:(
       <svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
         <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
@@ -99,8 +95,8 @@ const PHOTO_ZONES = [
   },
   {
     id:"paws", label:"Paws & Between Toes", shortLabel:"Paws",
-    tip:"Hold a paw and gently spread the toes. Hold phone 6–8 inches away. Capture skin between toes.",
-    checks:["Toes spread apart","Skin between toes clearly visible","6–8 inches from the paw"],
+    tip:"Spread the toes gently. Hold phone 6–8 inches away. Capture skin between toes.",
+    checks:["Toes spread apart","Skin between toes visible","6–8 inches away"],
     svgGuide:(
       <svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
         <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
@@ -118,8 +114,8 @@ const PHOTO_ZONES = [
   },
   {
     id:"face", label:"Face & Muzzle", shortLabel:"Face",
-    tip:"Get your dog to face you at eye level. Hold phone about 12 inches away. Capture muzzle, eyes, and forehead.",
-    checks:["Dog facing the camera","At eye level (not from above)","Muzzle and eyes clearly in frame"],
+    tip:"Dog facing you at eye level. Hold phone about 12 inches away. Capture muzzle, eyes, and forehead.",
+    checks:["Dog facing camera","At eye level","Muzzle and eyes in frame"],
     svgGuide:(
       <svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
         <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
@@ -142,11 +138,31 @@ const PHOTO_ZONES = [
 const DIET_OPTIONS = ["Kibble (dry food)","Wet / canned food","Raw diet (BARF)","Home-cooked meals","Mixed / combination","Prescription diet","Other"];
 const WEEKS = ["Baseline","Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"];
 
-// ── Client-side soft photo check (never hard-blocks) ─────────────────────────
+// ── Detect HEIC from base64 signature ────────────────────────────────────────
+function isHeicFormat(b64) {
+  // HEIC files start with ftyp box; base64 signature varies but common patterns:
+  const head = b64.substring(0, 12);
+  return head.startsWith("AAAB") || head.startsWith("AAAC") || head.startsWith("AAAM") ||
+         head.startsWith("AAAAf") || head.startsWith("AAAAg");
+}
+
+// ── Client-side soft check ────────────────────────────────────────────────────
 async function softCheck(file) {
   return new Promise(resolve => {
+    // Check HEIC by file extension or MIME type first
+    const name = file.name?.toLowerCase() || "";
+    const type = file.type?.toLowerCase() || "";
+    if (name.endsWith(".heic") || name.endsWith(".heif") || type.includes("heic") || type.includes("heif")) {
+      resolve({
+        warnings: ["HEIC photo format detected"],
+        isHeic: true,
+        heicInstructions: "iPhone photos in HEIC format cannot be processed. To fix this:\n\n1. Go to iPhone Settings → Camera → Formats\n2. Select \"Most Compatible\"\n3. Retake the photo — it will now save as JPEG\n\nOr: Take a screenshot of the photo (press Side button + Volume Up) and upload the screenshot instead."
+      });
+      return;
+    }
+
     const warnings = [];
-    if (file.size < 15000) { warnings.push("File is very small — the photo may not have saved correctly. Try again."); resolve({warnings}); return; }
+    if (file.size < 15000) { warnings.push("File is very small — the photo may not have saved correctly."); resolve({warnings,isHeic:false}); return; }
     const img = new Image();
     const url = URL.createObjectURL(file);
     img.onload = () => {
@@ -166,32 +182,45 @@ async function softCheck(file) {
       const brightness=(rm+gm+bm)/3;
       if(variance<120){
         if(brightness<35) warnings.push("Photo is too dark. Enable camera flash and try again.");
-        else if(brightness>230) warnings.push("Photo is overexposed (too bright). Adjust your angle or lighting.");
-        else warnings.push("Photo has very little detail visible. Check that the correct body area fills the frame.");
+        else if(brightness>230) warnings.push("Photo is overexposed. Adjust your angle or lighting.");
+        else warnings.push("Photo has very little detail. Check the correct body area fills the frame.");
       }
       URL.revokeObjectURL(url);
-      resolve({warnings});
+      resolve({warnings,isHeic:false});
     };
-    img.onerror=()=>{URL.revokeObjectURL(url);warnings.push("Could not read this image. Please try again.");resolve({warnings});};
+    img.onerror=()=>{URL.revokeObjectURL(url);warnings.push("Could not read image. Please try again.");resolve({warnings,isHeic:false});};
     img.src=url;
   });
 }
 
-// ── API call — goes through Netlify serverless function ───────────────────────
+// ── Validate photo via AI before committing ───────────────────────────────────
+async function validatePhotoWithAI(base64, zone) {
+  try {
+    const res = await fetch("/.netlify/functions/analyze", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ imageBase64: base64, zoneLabel: zone.label, dogInfo:{}, weekLabel:"Baseline", validateOnly: true }),
+    });
+    if (!res.ok) return { usable: true, issue: "", suggestion: "" }; // fail open
+    return await res.json();
+  } catch { return { usable: true, issue: "", suggestion: "" }; }
+}
+
+// ── Full analysis ─────────────────────────────────────────────────────────────
 async function callAnalyze(imageBase64, zone, dogInfo, weekLabel) {
   const res = await fetch("/.netlify/functions/analyze", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
     body: JSON.stringify({ imageBase64, zoneLabel: zone.label, dogInfo, weekLabel }),
   });
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
+    const err = await res.json().catch(()=>({}));
     throw new Error(err.error || `Server error ${res.status}`);
   }
   return res.json();
 }
 
-// ── PDF generator ─────────────────────────────────────────────────────────────
+// ── PDF ───────────────────────────────────────────────────────────────────────
 async function generatePDF(dogInfo, results, weekLabel) {
   if (!window.jspdf) {
     await new Promise((resolve, reject) => {
@@ -226,7 +255,7 @@ async function generatePDF(dogInfo, results, weekLabel) {
   if(dogInfo.email){doc.setTextColor(77,142,160);doc.text(dogInfo.email,W-m,y+19,{align:"right"});}
   y+=34;
 
-  const scores=results.filter(r=>r.score).map(r=>r.score);
+  const scores=results.filter(r=>r.score&&r.score>0).map(r=>r.score);
   const avg=scores.length?(scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1):"—";
   const sn=parseFloat(avg);
   const lbl=sn>=9?"Excellent":sn>=7.5?"Good":sn>=6?"Fair":"Needs Attention";
@@ -238,43 +267,76 @@ async function generatePDF(dogInfo, results, weekLabel) {
   doc.text("Overall skin & coat score  ·  "+weekLabel,m+36,y+19);
   y+=34;
 
+  // Zone bars
   doc.setFontSize(8); doc.setFont("helvetica","bold"); doc.setTextColor(60,92,83); doc.text("RESULTS BY AREA",m,y); y+=7;
   results.forEach(r=>{
     const zone=PHOTO_ZONES.find(z=>z.id===r.zoneId);
     const s2=r.score||0; const bc=s2>=8?[114,170,185]:s2>=6?[60,92,83]:[204,102,51];
     const bw=W-m*2-36;
     doc.setFontSize(9); doc.setFont("helvetica","normal"); doc.setTextColor(74,102,96); doc.text(zone?.shortLabel||"",m,y+4);
-    doc.setFillColor(220,228,226); doc.roundedRect(m+20,y-1,bw,6,1,1,"F");
-    doc.setFillColor(...bc); doc.roundedRect(m+20,y-1,bw*s2/10,6,1,1,"F");
-    doc.setFont("helvetica","bold"); doc.setTextColor(...bc); doc.text(String(s2),W-m,y+4,{align:"right"});
+    if(s2>0){
+      doc.setFillColor(220,228,226); doc.roundedRect(m+20,y-1,bw,6,1,1,"F");
+      doc.setFillColor(...bc); doc.roundedRect(m+20,y-1,bw*s2/10,6,1,1,"F");
+      doc.setFont("helvetica","bold"); doc.setTextColor(...bc); doc.text(String(s2),W-m,y+4,{align:"right"});
+    } else {
+      doc.setTextColor(122,153,144); doc.text("Not analyzed",m+20,y+4);
+    }
     y+=10;
     if(r.photoNote&&r.photoNote.trim()){doc.setFontSize(7.5);doc.setFont("helvetica","italic");doc.setTextColor(122,153,144);doc.text("i  "+r.photoNote,m+20,y);y+=5;}
   });
   y+=4;
 
+  // Per-zone findings
   doc.setFillColor(60,92,83); doc.rect(m,y,W-m*2,7,"F");
-  doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont("helvetica","bold"); doc.text("KEY FINDINGS",m+4,y+5); y+=12;
-  results.flatMap(r=>r.observations||[]).forEach(obs=>{
-    doc.setFillColor(114,170,185); doc.circle(m+2,y+1,1.2,"F");
-    doc.setTextColor(74,102,96); doc.setFontSize(9); doc.setFont("helvetica","normal");
-    const lines=doc.splitTextToSize(obs,W-m*2-8); doc.text(lines,m+6,y+2); y+=lines.length*5+2;
-    if(y>H-70){doc.addPage();y=m;}
-  });
-  y+=4;
+  doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont("helvetica","bold"); doc.text("KEY FINDINGS BY AREA",m+4,y+5); y+=12;
 
+  results.forEach(r=>{
+    const zone=PHOTO_ZONES.find(z=>z.id===r.zoneId);
+    if(y>H-70){doc.addPage();y=m;}
+    doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.setTextColor(60,92,83);
+    doc.text(zone?.label||"",m,y); y+=5;
+    if(!r.score||r.score===0){
+      doc.setFont("helvetica","italic"); doc.setTextColor(122,153,144);
+      doc.text("  "+( r.photoNote||"Photo could not be analyzed."),m+2,y); y+=7;
+    } else {
+      (r.observations||[]).forEach(obs=>{
+        doc.setFillColor(114,170,185); doc.circle(m+2,y+1,1.2,"F");
+        doc.setFont("helvetica","normal"); doc.setTextColor(74,102,96);
+        const lines=doc.splitTextToSize(obs,W-m*2-8); doc.text(lines,m+6,y+2); y+=lines.length*5+2;
+        if(y>H-70){doc.addPage();y=m;}
+      });
+    }
+    y+=3;
+  });
+
+  // Diet signal
   const ds=results.find(r=>r.dietSignals)?.dietSignals;
-  if(ds){const dsL=doc.splitTextToSize(ds,W-m*2-14),dsH=dsL.length*5+14;
+  if(ds){
+    const dsL=doc.splitTextToSize(ds,W-m*2-14),dsH=dsL.length*5+14;
     if(y+dsH>H-m){doc.addPage();y=m;}
     doc.setFillColor(232,242,246);doc.roundedRect(m,y,W-m*2,dsH,3,3,"F");
     doc.setFontSize(8);doc.setFont("helvetica","bold");doc.setTextColor(77,142,160);doc.text("DIET SIGNAL",m+6,y+7);
-    doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(30,46,42);doc.text(dsL,m+6,y+13);y+=dsH+6;}
+    doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(30,46,42);doc.text(dsL,m+6,y+13);y+=dsH+6;
+  }
 
-  const recs=results.map(r=>r.recommendations).filter(Boolean).join(" ");
-  if(recs){const recL=doc.splitTextToSize(recs,W-m*2-14),recH=recL.length*5+14;
-    if(y+recH>H-m){doc.addPage();y=m;}
-    doc.setFillColor(60,92,83);doc.roundedRect(m,y,W-m*2,recH,3,3,"F");
-    doc.setFontSize(8);doc.setFont("helvetica","bold");doc.setTextColor(168,205,216);doc.text("RECOMMENDATIONS",m+6,y+7);
-    doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(241,241,240);doc.text(recL,m+6,y+13);y+=recH+6;}
+  // Recommendations as bullets
+  const allRecs = results.map(r=>r.recommendations).filter(Boolean);
+  const recBullets = [...new Set(allRecs.flatMap(r=>r.split("|").map(b=>b.trim()).filter(Boolean)))];
+  if(recBullets.length){
+    if(y+20>H-m){doc.addPage();y=m;}
+    doc.setFillColor(60,92,83);
+    const startY=y;
+    let estimatedH=14+recBullets.length*8;
+    doc.roundedRect(m,y,W-m*2,Math.min(estimatedH,60),3,3,"F");
+    doc.setFontSize(8);doc.setFont("helvetica","bold");doc.setTextColor(168,205,216);doc.text("RECOMMENDATIONS",m+6,y+7);y+=13;
+    recBullets.forEach(bullet=>{
+      if(y>H-m){doc.addPage();y=m;doc.setFillColor(60,92,83);}
+      doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(241,241,240);
+      const lines=doc.splitTextToSize("• "+bullet,W-m*2-14);
+      doc.text(lines,m+6,y);y+=lines.length*5+1;
+    });
+    y+=6;
+  }
 
   const pages=doc.getNumberOfPages();
   for(let p=1;p<=pages;p++){
@@ -287,7 +349,7 @@ async function generatePDF(dogInfo, results, weekLabel) {
   doc.save(`NOBL-${(dogInfo.name||"Dog").replace(/\s+/g,"-")}-${weekLabel.replace(/\s+/g,"-")}-Report.pdf`);
 }
 
-// ── Shared Styles ─────────────────────────────────────────────────────────────
+// ── Styles ────────────────────────────────────────────────────────────────────
 const S = {
   page:{minHeight:"100vh",background:C.fog,fontFamily:"'DM Sans','Helvetica Neue',sans-serif",color:C.text},
   header:{background:C.forest,padding:"10px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",minHeight:"58px"},
@@ -301,7 +363,6 @@ const S = {
   btnOutline:{padding:"10px 16px",borderRadius:"10px",border:`1.5px solid ${C.forest}`,background:"transparent",color:C.forest,fontSize:"13px",fontWeight:"600",cursor:"pointer",fontFamily:"'DM Sans',sans-serif"},
 };
 
-// ── Header ────────────────────────────────────────────────────────────────────
 function Header({dogName,week}){
   return(
     <div style={S.header}>
@@ -321,56 +382,82 @@ function Header({dogName,week}){
   );
 }
 
-// ── Photo Capture ─────────────────────────────────────────────────────────────
+// ── Photo Capture with AI validation ─────────────────────────────────────────
 function PhotoCapture({zones, onComplete}){
   const [idx,setIdx]=useState(0);
   const [photos,setPhotos]=useState({});
   const [previews,setPreviews]=useState({});
   const [warnings,setWarnings]=useState([]);
+  const [heicInfo,setHeicInfo]=useState(null);
   const [checking,setChecking]=useState(false);
+  const [validating,setValidating]=useState(false);
+  const [aiIssue,setAiIssue]=useState(null);
   const [pendingFile,setPendingFile]=useState(null);
+  const [pendingBase64,setPendingBase64]=useState(null);
   const fileRef=useRef();
 
   const zone=zones[idx];
   const isLast=idx===zones.length-1;
   const has=!!photos[zone.id];
 
-  const acceptFile=(file)=>{
-    const reader=new FileReader();
-    reader.onload=()=>{
-      setPhotos(p=>({...p,[zone.id]:reader.result.split(",")[1]}));
-      setPreviews(p=>({...p,[zone.id]:URL.createObjectURL(file)}));
-      setWarnings([]); setPendingFile(null);
-    };
-    reader.readAsDataURL(file);
+  const acceptBase64=(file,base64)=>{
+    setPhotos(p=>({...p,[zone.id]:base64}));
+    setPreviews(p=>({...p,[zone.id]:URL.createObjectURL(file)}));
+    setWarnings([]); setHeicInfo(null); setAiIssue(null); setPendingFile(null); setPendingBase64(null);
   };
 
   const handleChange=async e=>{
     const file=e.target.files[0]; if(!file) return;
-    // Reset input so same file can be re-selected
     e.target.value="";
-    setChecking(true); setWarnings([]); setPendingFile(null);
-    const {warnings:w}=await softCheck(file);
+    setChecking(true); setWarnings([]); setHeicInfo(null); setAiIssue(null); setPendingFile(null); setPendingBase64(null);
+
+    // Client-side check first (catches HEIC immediately)
+    const {warnings:w, isHeic, heicInstructions}=await softCheck(file);
+    if(isHeic){
+      setChecking(false);
+      setHeicInfo(heicInstructions);
+      return;
+    }
+    if(w.length>0){
+      setChecking(false); setWarnings(w); setPendingFile(file); return;
+    }
+
+    // Read to base64
+    const base64 = await new Promise(res=>{
+      const reader=new FileReader();
+      reader.onload=()=>res(reader.result.split(",")[1]);
+      reader.readAsDataURL(file);
+    });
+
     setChecking(false);
-    if(w.length>0){ setWarnings(w); setPendingFile(file); }
-    else { acceptFile(file); }
+    setValidating(true);
+
+    // AI validation
+    const validation = await validatePhotoWithAI(base64, zone);
+    setValidating(false);
+
+    if(!validation.usable){
+      setAiIssue(validation);
+      setPendingFile(file); setPendingBase64(base64);
+    } else {
+      acceptBase64(file, base64);
+    }
   };
 
-  const forceAccept=()=>{ if(pendingFile) acceptFile(pendingFile); };
+  const forceAccept=()=>{ if(pendingFile&&pendingBase64) acceptBase64(pendingFile,pendingBase64); };
   const retake=()=>{
     setPhotos(p=>{const n={...p};delete n[zone.id];return n;});
     setPreviews(p=>{const n={...p};delete n[zone.id];return n;});
-    setWarnings([]); setPendingFile(null);
+    setWarnings([]); setHeicInfo(null); setAiIssue(null); setPendingFile(null); setPendingBase64(null);
     setTimeout(()=>fileRef.current?.click(),100);
   };
   const next=()=>{
     if(isLast) onComplete(photos);
-    else { setIdx(i=>i+1); setWarnings([]); setPendingFile(null); }
+    else { setIdx(i=>i+1); setWarnings([]); setHeicInfo(null); setAiIssue(null); setPendingFile(null); setPendingBase64(null); }
   };
 
   return(
     <div>
-      {/* Progress bar */}
       <div style={{...S.card,padding:"16px 20px"}}>
         <div style={{display:"flex",justifyContent:"space-between",marginBottom:"10px"}}>
           <div style={{fontSize:"13px",fontWeight:"600",color:C.textMid}}>Photo {idx+1} of {zones.length}</div>
@@ -384,17 +471,13 @@ function PhotoCapture({zones, onComplete}){
         </div>
       </div>
 
-      {/* Flash reminder */}
       <div style={{background:C.ember,borderRadius:"10px",padding:"10px 14px",display:"flex",alignItems:"center",gap:"10px",marginBottom:"12px"}}>
         <span style={{fontSize:"16px",flexShrink:0}}>⚡</span>
         <div style={{fontSize:"13px",color:C.white,fontWeight:"600"}}>Enable camera flash before taking this photo</div>
       </div>
 
       <div style={S.card}>
-        {/* SVG guide */}
         <div style={{marginBottom:"14px"}}>{zone.svgGuide}</div>
-
-        {/* Tip */}
         <div style={{background:"rgba(114,170,185,0.1)",border:"1px solid rgba(114,170,185,0.25)",borderRadius:"10px",padding:"11px 14px",marginBottom:"12px",fontSize:"13px",color:C.text,lineHeight:"1.55"}}>
           <span style={{fontWeight:"700",color:C.sky}}>How to take this photo — </span>{zone.tip}
         </div>
@@ -404,72 +487,86 @@ function PhotoCapture({zones, onComplete}){
           <div style={{fontSize:"11px",fontWeight:"600",color:C.textLight,letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:"6px"}}>Before uploading, confirm:</div>
           {zone.checks.map((t,i)=>(
             <div key={i} style={{display:"flex",gap:"8px",alignItems:"center",marginBottom:"5px"}}>
-              <div style={{width:"14px",height:"14px",borderRadius:"3px",background:`rgba(60,92,83,0.15)`,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <div style={{width:"14px",height:"14px",borderRadius:"3px",background:"rgba(60,92,83,0.15)",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
                 <div style={{width:"7px",height:"7px",borderRadius:"1px",background:C.forest}}/>
               </div>
-              <div style={{fontSize:"12px",color:C.textMid,lineHeight:"1.4"}}>{t}</div>
+              <div style={{fontSize:"12px",color:C.textMid}}>{t}</div>
             </div>
           ))}
         </div>
 
-        {/* Warning panel */}
-        {warnings.length>0&&!has&&(
+        {/* HEIC error — most prominent, no "use anyway" */}
+        {heicInfo&&(
+          <div style={{background:"rgba(204,102,51,0.08)",border:"2px solid rgba(204,102,51,0.4)",borderRadius:"10px",padding:"14px",marginBottom:"12px"}}>
+            <div style={{fontWeight:"700",color:C.ember,fontSize:"14px",marginBottom:"8px"}}>⚠ iPhone HEIC format not supported</div>
+            <div style={{fontSize:"13px",color:"#9e4e26",lineHeight:"1.6",whiteSpace:"pre-line",marginBottom:"12px"}}>{heicInfo}</div>
+            <button onClick={()=>fileRef.current?.click()} style={{...S.btnPrimary,padding:"11px",fontSize:"14px"}}>
+              📷 Upload a different photo
+            </button>
+          </div>
+        )}
+
+        {/* General warnings */}
+        {warnings.length>0&&!has&&!heicInfo&&(
           <div style={{background:"rgba(204,102,51,0.08)",border:"1px solid rgba(204,102,51,0.35)",borderRadius:"10px",padding:"14px",marginBottom:"12px"}}>
             <div style={{fontWeight:"700",color:C.ember,fontSize:"14px",marginBottom:"8px"}}>⚠ Photo issue detected</div>
             {warnings.map((w,i)=>(
-              <div key={i} style={{fontSize:"13px",color:"#9e4e26",marginBottom:"5px",lineHeight:"1.5",paddingLeft:"4px"}}>• {w}</div>
+              <div key={i} style={{fontSize:"13px",color:"#9e4e26",marginBottom:"5px",lineHeight:"1.5"}}>• {w}</div>
             ))}
             <div style={{display:"flex",gap:"8px",marginTop:"12px"}}>
-              <button onClick={()=>fileRef.current?.click()} style={{...S.btnPrimary,flex:2,padding:"11px",fontSize:"14px"}}>
-                📷 Retake photo
-              </button>
-              <button onClick={forceAccept} style={{...S.btnOutline,flex:1}}>
-                Use anyway
-              </button>
+              <button onClick={()=>fileRef.current?.click()} style={{...S.btnPrimary,flex:2,padding:"11px",fontSize:"14px"}}>📷 Retake photo</button>
+              <button onClick={forceAccept} style={{...S.btnOutline,flex:1}}>Use anyway</button>
             </div>
           </div>
         )}
 
-        {/* Checking */}
-        {checking&&(
-          <div style={{textAlign:"center",padding:"20px",color:C.sky,fontSize:"14px",fontWeight:"600"}}>
-            <div style={{marginBottom:"6px"}}>🔍</div>
-            Checking photo quality...
+        {/* AI validation issue */}
+        {aiIssue&&!has&&(
+          <div style={{background:"rgba(204,102,51,0.08)",border:"1px solid rgba(204,102,51,0.35)",borderRadius:"10px",padding:"14px",marginBottom:"12px"}}>
+            <div style={{fontWeight:"700",color:C.ember,fontSize:"14px",marginBottom:"6px"}}>⚠ Photo needs improvement</div>
+            <div style={{fontSize:"13px",color:"#9e4e26",marginBottom:"4px",lineHeight:"1.5"}}><strong>Issue:</strong> {aiIssue.issue}</div>
+            {aiIssue.suggestion&&<div style={{fontSize:"13px",color:C.text,marginBottom:"10px",lineHeight:"1.5"}}><strong>Fix:</strong> {aiIssue.suggestion}</div>}
+            <div style={{display:"flex",gap:"8px",marginTop:"10px"}}>
+              <button onClick={()=>fileRef.current?.click()} style={{...S.btnPrimary,flex:2,padding:"11px",fontSize:"14px"}}>📷 Retake photo</button>
+              <button onClick={forceAccept} style={{...S.btnOutline,flex:1}}>Use anyway</button>
+            </div>
           </div>
         )}
 
-        {/* Preview + action buttons */}
-        {has&&!checking&&(
+        {/* Checking / validating */}
+        {(checking||validating)&&(
+          <div style={{textAlign:"center",padding:"20px",color:C.sky,fontSize:"14px",fontWeight:"600"}}>
+            <div style={{marginBottom:"6px"}}>{validating?"🔍":"⏳"}</div>
+            {validating?"Checking photo quality with AI...":"Checking photo..."}
+          </div>
+        )}
+
+        {/* Preview */}
+        {has&&!checking&&!validating&&(
           <div>
             <img src={previews[zone.id]} alt={zone.label}
               style={{width:"100%",borderRadius:"10px",maxHeight:"200px",objectFit:"cover",display:"block",marginBottom:"10px"}}/>
             <div style={{display:"flex",gap:"8px"}}>
-              <button onClick={retake} style={{...S.btnPrimary,background:"transparent",color:C.forest,border:`1.5px solid ${C.forest}`,flex:1}}>
-                Retake
-              </button>
-              <button onClick={next} style={{...S.btnPrimary,flex:2}}>
-                {isLast?"Run Analysis →":`Next: ${zones[idx+1]?.shortLabel} →`}
-              </button>
+              <button onClick={retake} style={{...S.btnPrimary,background:"transparent",color:C.forest,border:`1.5px solid ${C.forest}`,flex:1}}>Retake</button>
+              <button onClick={next} style={{...S.btnPrimary,flex:2}}>{isLast?"Run Analysis →":`Next: ${zones[idx+1]?.shortLabel} →`}</button>
             </div>
           </div>
         )}
 
-        {/* Upload area — shown when no photo and no warnings */}
-        {!has&&!checking&&warnings.length===0&&(
+        {/* Upload area */}
+        {!has&&!checking&&!validating&&!warnings.length&&!heicInfo&&!aiIssue&&(
           <div onClick={()=>fileRef.current?.click()}
-            style={{border:"2px dashed rgba(60,92,83,0.25)",borderRadius:"12px",padding:"32px 20px",
-              textAlign:"center",cursor:"pointer",background:"rgba(60,92,83,0.03)"}}>
+            style={{border:"2px dashed rgba(60,92,83,0.25)",borderRadius:"12px",padding:"32px 20px",textAlign:"center",cursor:"pointer",background:"rgba(60,92,83,0.03)"}}>
             <div style={{fontSize:"30px",marginBottom:"8px"}}>📷</div>
             <div style={{fontSize:"15px",fontWeight:"600",color:C.forest,marginBottom:"4px"}}>Tap to upload photo</div>
-            <div style={{fontSize:"12px",color:C.textLight}}>From camera roll or take new</div>
+            <div style={{fontSize:"12px",color:C.textLight}}>JPEG or PNG · Not HEIC</div>
           </div>
         )}
 
-        <input ref={fileRef} type="file" accept="image/*" capture="environment"
+        <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif"
           style={{display:"none"}} onChange={handleChange}/>
       </div>
 
-      {/* Thumbnail strip of completed photos */}
       {Object.keys(previews).length>0&&(
         <div style={{...S.card,padding:"14px 16px"}}>
           <div style={S.lbl}>Uploaded so far</div>
@@ -479,8 +576,7 @@ function PhotoCapture({zones, onComplete}){
                 <img src={previews[z.id]} alt={z.label}
                   style={{width:"56px",height:"56px",borderRadius:"8px",objectFit:"cover",border:`2px solid ${C.sky}`}}/>
                 <div style={{position:"absolute",bottom:"2px",left:"2px",right:"2px",
-                  background:"rgba(0,0,0,0.55)",borderRadius:"4px",fontSize:"8px",
-                  color:"white",textAlign:"center",padding:"1px"}}>{z.shortLabel}</div>
+                  background:"rgba(0,0,0,0.55)",borderRadius:"4px",fontSize:"8px",color:"white",textAlign:"center",padding:"1px"}}>{z.shortLabel}</div>
               </div>
             ))}
           </div>
@@ -490,7 +586,6 @@ function PhotoCapture({zones, onComplete}){
   );
 }
 
-// ── Score Ring ────────────────────────────────────────────────────────────────
 function ScoreRing({score,size=84,stroke=7}){
   const r=size/2-stroke,circ=2*Math.PI*r,offset=circ-(score/10)*circ;
   const color=score>=8?C.sky:score>=6?C.forest:C.ember;
@@ -504,12 +599,16 @@ function ScoreRing({score,size=84,stroke=7}){
   );
 }
 
-// ── Results ───────────────────────────────────────────────────────────────────
 function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelectWeek,onNextWeek}){
   const [pdfLoading,setPdfLoading]=useState(false);
-  const valid=results.filter(r=>r.score);
+  const valid=results.filter(r=>r.score&&r.score>0);
   const avg=valid.length?parseFloat((valid.reduce((a,b)=>a+(b.score||0),0)/valid.length).toFixed(1)):0;
   const lbl=avg>=9?"Excellent":avg>=7.5?"Good":avg>=6?"Fair":"Needs Attention";
+
+  // Collect all unique recommendation bullets across zones
+  const allBullets=[...new Set(
+    results.flatMap(r=>(r.recommendations||"").split("|").map(b=>b.trim()).filter(Boolean))
+  )];
 
   const handlePDF=async()=>{
     setPdfLoading(true);
@@ -533,6 +632,7 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
         </div>
       )}
 
+      {/* Score hero */}
       <div style={{...S.cardForest,display:"flex",alignItems:"center",gap:"20px"}}>
         <div style={{position:"relative",flexShrink:0}}>
           <ScoreRing score={avg}/>
@@ -550,6 +650,7 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
         </div>
       </div>
 
+      {/* Zone bars */}
       <div style={S.card}>
         <div style={S.lbl}>By area</div>
         {results.map((r,i)=>{
@@ -559,10 +660,16 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
             <div key={i} style={{marginBottom:"10px"}}>
               <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
                 <div style={{fontSize:"12px",color:C.textMid,width:"68px",flexShrink:0}}>{zone?.shortLabel}</div>
-                <div style={{flex:1,height:"6px",borderRadius:"3px",background:"rgba(60,92,83,0.1)",overflow:"hidden"}}>
-                  <div style={{height:"100%",width:`${(r.score||0)*10}%`,background:bc,borderRadius:"3px",transition:"width 0.8s ease"}}/>
-                </div>
-                <div style={{fontSize:"13px",fontWeight:"700",color:bc,width:"24px",textAlign:"right"}}>{r.score}</div>
+                {r.score>0?(
+                  <>
+                    <div style={{flex:1,height:"6px",borderRadius:"3px",background:"rgba(60,92,83,0.1)",overflow:"hidden"}}>
+                      <div style={{height:"100%",width:`${r.score*10}%`,background:bc,borderRadius:"3px",transition:"width 0.8s ease"}}/>
+                    </div>
+                    <div style={{fontSize:"13px",fontWeight:"700",color:bc,width:"24px",textAlign:"right"}}>{r.score}</div>
+                  </>
+                ):(
+                  <div style={{fontSize:"12px",color:C.textLight,fontStyle:"italic"}}>Not analyzed</div>
+                )}
               </div>
               {r.photoNote&&r.photoNote.trim()&&(
                 <div style={{fontSize:"11px",color:C.textLight,marginTop:"3px",paddingLeft:"78px"}}>ℹ {r.photoNote}</div>
@@ -572,25 +679,56 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
         })}
       </div>
 
+      {/* Per-zone findings */}
       <div style={S.card}>
-        <div style={S.lbl}>Key findings</div>
-        {results.flatMap(r=>r.observations||[]).map((obs,i)=>(
-          <div key={i} style={{display:"flex",gap:"10px",alignItems:"flex-start",marginBottom:"8px"}}>
-            <div style={{width:"6px",height:"6px",borderRadius:"50%",background:C.sky,flexShrink:0,marginTop:"6px"}}/>
-            <div style={{fontSize:"13px",color:C.textMid,lineHeight:"1.55"}}>{obs}</div>
-          </div>
-        ))}
+        <div style={S.lbl}>Key findings by area</div>
+        {results.map((r,i)=>{
+          const zone=PHOTO_ZONES.find(z=>z.id===r.zoneId);
+          return(
+            <div key={i} style={{marginBottom:"14px"}}>
+              <div style={{fontSize:"13px",fontWeight:"700",color:C.forest,marginBottom:"6px",paddingBottom:"4px",borderBottom:`1px solid rgba(60,92,83,0.1)`}}>
+                {zone?.label}
+              </div>
+              {(!r.score||r.score===0)?(
+                <div style={{fontSize:"13px",color:C.textLight,fontStyle:"italic",paddingLeft:"4px"}}>
+                  {r.photoNote||"Photo could not be analyzed. Please retake and try again."}
+                </div>
+              ):(
+                (r.observations||[]).map((obs,j)=>(
+                  <div key={j} style={{display:"flex",gap:"10px",alignItems:"flex-start",marginBottom:"6px"}}>
+                    <div style={{width:"6px",height:"6px",borderRadius:"50%",background:C.sky,flexShrink:0,marginTop:"5px"}}/>
+                    <div style={{fontSize:"13px",color:C.textMid,lineHeight:"1.5"}}>{obs}</div>
+                  </div>
+                ))
+              )}
+            </div>
+          );
+        })}
       </div>
 
+      {/* Diet signal */}
       <div style={{...S.card,background:"rgba(114,170,185,0.1)",border:"1px solid rgba(114,170,185,0.25)"}}>
         <div style={{...S.lbl,color:C.skyDark}}>Diet signal</div>
         <div style={{fontSize:"14px",color:C.text,lineHeight:"1.6"}}>{results.find(r=>r.dietSignals)?.dietSignals||"—"}</div>
       </div>
 
-      <div style={S.cardForest}>
-        <div style={{...S.lbl,color:C.skyLight}}>Recommendations</div>
-        <div style={{fontSize:"14px",color:C.fog,lineHeight:"1.6"}}>{results.map(r=>r.recommendations).filter(Boolean).join(" ")}</div>
-      </div>
+      {/* Recommendations as bullets */}
+      {allBullets.length>0&&(
+        <div style={S.cardForest}>
+          <div style={{...S.lbl,color:C.skyLight}}>Recommendations</div>
+          {allBullets.map((bullet,i)=>{
+            const isClosing = bullet.toLowerCase().includes("nobLfoods.com") || bullet.toLowerCase().includes("customerservice");
+            return(
+              <div key={i} style={{display:"flex",gap:"10px",alignItems:"flex-start",marginBottom:"8px",
+                paddingTop: isClosing?"10px":"0",
+                borderTop: isClosing?"1px solid rgba(255,255,255,0.15)":"none"}}>
+                <div style={{fontSize:"14px",color:C.fog,flexShrink:0,marginTop:"1px"}}>•</div>
+                <div style={{fontSize:"13px",color:isClosing?C.skyLight:C.fog,lineHeight:"1.55",fontStyle:isClosing?"italic":"normal"}}>{bullet}</div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       <button onClick={handlePDF} disabled={pdfLoading}
         style={{...S.btnSky,display:"flex",alignItems:"center",justifyContent:"center",gap:"8px"}}>
@@ -611,7 +749,6 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
   );
 }
 
-// ── Main App ──────────────────────────────────────────────────────────────────
 export default function NoblDogTracker(){
   const [step,setStep]=useState("onboarding");
   const [dogInfo,setDogInfo]=useState({name:"",breed:"",age:"",email:"",diet:"",dietBrand:"",dietDuration:""});
@@ -630,24 +767,23 @@ export default function NoblDogTracker(){
       const zone=PHOTO_ZONES[i];
       setAnalysisPhase(`Analyzing ${zone.label}...`);
       setAnalysisProgress(Math.round((i/PHOTO_ZONES.length)*100));
+      if(!photos[zone.id]){
+        results.push({zoneId:zone.id,score:0,observations:[],dietSignals:"",recommendations:"",photoNote:"Photo was skipped.",trend:"baseline"});
+        continue;
+      }
       try{
         const result=await callAnalyze(photos[zone.id],zone,dogInfo,WEEKS[currentWeek]);
         results.push({zoneId:zone.id,...result});
       }catch(err){
-        console.error("Analysis error for",zone.label,err);
-        results.push({zoneId:zone.id,score:0,observations:["Analysis could not be completed for this area — please check your internet connection and try again."],dietSignals:"",recommendations:"",photoNote:"",trend:"baseline"});
+        results.push({zoneId:zone.id,score:0,observations:[],dietSignals:"",recommendations:"",photoNote:"Analysis failed — please check your connection.",trend:"baseline"});
       }
     }
     setAnalysisProgress(100);
-
-    // Check if ALL zones failed (likely API key or network issue)
     const allFailed=results.every(r=>!r.score||r.score===0);
     if(allFailed){
       setAnalysisError("The analysis could not connect to the AI service. Please check that your ANTHROPIC_API_KEY is set correctly in Netlify environment variables, then redeploy and try again.");
-      setStep("error");
-      return;
+      setStep("error"); return;
     }
-
     const entry={week:currentWeek,weekLabel:WEEKS[currentWeek],results,timestamp:new Date().toLocaleDateString()};
     setWeekResults(r=>({...r,[currentWeek]:results}));
     setHistory(h=>[...h.filter(e=>e.week!==currentWeek),entry]);
@@ -664,16 +800,11 @@ export default function NoblDogTracker(){
       <Header dogName={dogInfo.name||null} week={step!=="onboarding"?currentWeek:undefined}/>
       <div style={S.body}>
 
-        {/* ONBOARDING */}
         {step==="onboarding"&&(
           <div>
             <div style={{...S.card,marginTop:"4px"}}>
-              <div style={{fontFamily:"'DM Serif Display',Georgia,serif",fontSize:"22px",color:C.forest,marginBottom:"6px"}}>
-                Track your dog's skin & coat health
-              </div>
-              <div style={{fontSize:"14px",color:C.textMid,lineHeight:"1.6",marginBottom:"20px"}}>
-                Upload baseline photos today, then check in weekly for 5–6 weeks. NOBL's AI tracks changes and shows how your dog's diet is — or isn't — working.
-              </div>
+              <div style={{fontFamily:"'DM Serif Display',Georgia,serif",fontSize:"22px",color:C.forest,marginBottom:"6px"}}>Track your dog's skin & coat health</div>
+              <div style={{fontSize:"14px",color:C.textMid,lineHeight:"1.6",marginBottom:"20px"}}>Upload baseline photos today, then check in weekly for 5–6 weeks. NOBL's AI tracks changes and shows how your dog's diet is — or isn't — working.</div>
               <div style={S.lbl}>Dog's name *</div>
               <input style={S.input} placeholder="e.g. Buddy" value={dogInfo.name} onChange={e=>upd("name",e.target.value)}/>
               <div style={S.lbl}>Breed</div>
@@ -714,10 +845,8 @@ export default function NoblDogTracker(){
           </div>
         )}
 
-        {/* PHOTOS */}
         {step==="photos"&&<PhotoCapture zones={PHOTO_ZONES} onComplete={handlePhotosComplete}/>}
 
-        {/* ANALYZING */}
         {step==="analyzing"&&(
           <div style={{...S.card,textAlign:"center",padding:"48px 24px",marginTop:"4px"}}>
             <div style={{position:"relative",width:"72px",height:"72px",margin:"0 auto 20px"}}>
@@ -731,26 +860,20 @@ export default function NoblDogTracker(){
               </svg>
               <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"13px",fontWeight:"600",color:C.forest}}>{analysisProgress}%</div>
             </div>
-            <div style={{fontFamily:"'DM Serif Display',Georgia,serif",fontSize:"20px",color:C.forest,marginBottom:"8px"}}>
-              Analyzing {dogInfo.name}'s health
-            </div>
+            <div style={{fontFamily:"'DM Serif Display',Georgia,serif",fontSize:"20px",color:C.forest,marginBottom:"8px"}}>Analyzing {dogInfo.name}'s health</div>
             <div style={{fontSize:"14px",color:C.textMid}}>{analysisPhase||"Starting analysis..."}</div>
           </div>
         )}
 
-        {/* ERROR STATE */}
         {step==="error"&&(
           <div style={{...S.card,marginTop:"4px",textAlign:"center",padding:"36px 24px"}}>
             <div style={{fontSize:"36px",marginBottom:"12px"}}>⚠️</div>
-            <div style={{fontFamily:"'DM Serif Display',Georgia,serif",fontSize:"18px",color:C.forest,marginBottom:"12px"}}>
-              Analysis unavailable
-            </div>
+            <div style={{fontFamily:"'DM Serif Display',Georgia,serif",fontSize:"18px",color:C.forest,marginBottom:"12px"}}>Analysis unavailable</div>
             <div style={{fontSize:"13px",color:C.textMid,lineHeight:"1.65",marginBottom:"20px"}}>{analysisError}</div>
             <button style={S.btnPrimary} onClick={()=>setStep("photos")}>Try again</button>
           </div>
         )}
 
-        {/* RESULTS */}
         {step==="results"&&weekResults[viewingWeek]&&(
           <AnalysisResults
             results={weekResults[viewingWeek]}
@@ -762,7 +885,6 @@ export default function NoblDogTracker(){
             onNextWeek={()=>{setCurrentWeek(w=>Math.min(w+1,6));setStep("photos");}}
           />
         )}
-
       </div>
     </div>
   );
