@@ -2,21 +2,20 @@ import { useState, useRef, useCallback } from "react";
 
 // ── NOBL Brand Colors ─────────────────────────────────────────────────────────
 const C = {
-  forest:     "#3C5C53",
-  sky:        "#72AAB9",
-  ember:      "#CC6633",
-  fog:        "#F1F1F0",
-  white:      "#FFFFFF",
-  forestDark: "#2a423c",
-  skyLight:   "#a8cdd8",
-  skyDark:    "#4d8ea0",
-  text:       "#1e2e2a",
-  textMid:    "#4a6660",
-  textLight:  "#7a9990",
+  forest:    "#3C5C53",
+  sky:       "#72AAB9",
+  ember:     "#CC6633",
+  fog:       "#F1F1F0",
+  white:     "#FFFFFF",
+  skyLight:  "#a8cdd8",
+  skyDark:   "#4d8ea0",
+  text:      "#1e2e2a",
+  textMid:   "#4a6660",
+  textLight: "#7a9990",
 };
 
-// ── NOBL Logo (embedded PNG) ──────────────────────────────────────────────────
-const LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAADMCAIAAADS5mKjAAAflUlEQVR42u2deZhdVZXo19r7nDvfukNVJanKUBmqKoEMhEBCgBBmCNi0DYLoa7WfLTaDrT5tFSSMoRt8KggoIION2vRzoAUigxASICEhgIQYJjPPIVONt+58z17r/XEqiPbXGPTeqnPvXb/vfnzwhe/m3L33+Z219tl7bdz32E+gjKCiYiEwZkJi7mkADIAwtPSsWlLYt1vZNjCX5fcwkfL5m07/WxUIlf1qmQiVclK96d//Dq1yXXMFQAAi9PkbjpoLzIBQ5p5lBsTC/j09K58pX98NZ3sxkZ1sShx/uvIF3J4GVJX4m7qWLXb6e1BbAFyu+zd+3KnBsRPdThmK1jrUOJn16w4++0j692uddErZ/mBbe+PJ5ybnnwOomAwqDQDWjntvKauvkEolX+PI6BEzrVhy6H7zoUF/4PGH+l59wQpHyVAZvlMhlxy7IZ6Ye5oKhMr7c1xbmXRq06IvDLzzuvIHgDx8oyKwMWM+8+WWiz7PTFhWZzETos7t2rzjrhvK1nfD2lYIAIChiUc0nvo3Iz/6adQWEIEqv7P2/vLezJb1KhAEKkOjKa1LA30dyabg2Ilup1T+riVE5fT37rhnUffzj/tGjI5MPspKNFIhl9u6YfO3vhr8+T3j//nG6NRj3PvFssKR8l6BDutSX1d6wxvxOacwEWo9lENF+UNWOKpDEVWO/gNEdhwdCpdfu0yolMkMbLrpCwNv/dZqSLAh0N6+DS175323mFx2zGe+/N4Tr5zfr61y9t1wwwDZ7RvSd6/te23F+C9cFxg9oRKNpoJhKxxR/iBwGRoNlWYyaNlD1UaEqAr796y/8tPOQH/H9T9MnHDG+/88/fu1Ox/49ttf+ljn9fck55/DRBaXe3AgIjD3rloSn3PK0IVX72sCpsFPeYRVrq/602BQsXG2fPtrqbWrrUQjO87gGPe0sdBONL370J3+kaObz76QjSnz04i5nH3nAZQ/qEOR/tde3LTon6fc8mM72Vz+OOu9FuOyNBoy0RCl5MwASIX8phsvB+bp9z5FxXxq7UuACoB1JBYa3xE54ugjb/3Ztu9dvWnRFdPuXhzunGGV/zKM0cFw78vPjT6419fcMqRZYXU8eQkATT675Vtf7Xv1BSt+yFZVcOXMRFYsue32hSYzMOqCz5bfWTXX1+yQnWjK79628YbLO6+/224cUbn5rCprGyZUeu9/PZDdumHGj57xNY1cf+Vn+l5boXx+JkKAwJgJ4y5bGJ998oSv3JzdvnH7968/8vaHK9JwqC0n1Zfe+IY7UyN988exFQLitluv6l31rBWNs3Gq6/qZWYejO+//Vteyx1DrKrv+YWkzp6TDkcyWtzdcewnls4CqTNFQdd8IqLTJpvc9+pOWT1waGD0emJXP52saOfmm+4+87eeTrrqNSsWt375y1HMQAMZfcV1641t9r7xQIdMzIHQ/92s3j5Ah+4e7HZgds/U73+hZ+YydaKrKu50ZAHQosu32a7pfeAK1Jc46rLQjHM3t3Lzx+kupkBdnuXFM6o1XTTbdfNYF7oOcidCyG2bNi049pvHU81o/cVlh3+7czs0AEJ48I9IxrWvpI6pCV6NDkf7fvphevw6VkiDrvdgEUW2/85qDz/xX9cVW/y1OVLa97XsLu5c/Kc46LIzRoUjqjVc3XnepyWXEWQCQ2fSmr3mUv6XtDy+cmblUAACTGehfs1IHQ74Rre6fRI44OrPl91aFLgWVcgrZ/tdWRKYcVf3LaspxhzOjUjvvvfngkl/Zyeaqv8OZUVvAzrbbvqlDkfjsk2U+63DiLCsa71+3evPN/6d94R06EKzf+SwEACj1dtuxJLqxlUK0LCfV985XLgYAJ9VX6u2adOWtgdY2dkpo2XaymaBTlWosJla2P/W7l5kMqvqeYmRmIlBq+w9u2PfIv1vRRG3EI0yElgVKbbnlK/2/XY5aszFipT/nLMeOJfpfeX7rt7/OjgOgoI7zD2VZ7hunwXkjBlTKP3KMv7Ut0DoeLTu3c/N7b+3IOKi0qtxw1oFgev3vBt5aA4hM9TqU3UxQ6z0/vWP/rx+yYslaagomUpbNRJtv+crA22vEWYfVaI5jJRp7Vj69/Qc3MBlQqh5TEAYA8I8aW+zaPzipB8DG0dFYx3V3dVzz/Snf/mnypLN3/+T23J7tqC0AKOzZbjeOqGTsoxSVCqm1L713fXVpK0Kldj14656f32PFErV3PzORsm1m2nTj5ekNb4izDtNZdqLpwFO/2HrrlVwqujMGdZYSIgBEp812+nvSG99wfz4qhahMZsBdCxZqn4rakjp4gJkK+YE3X43NPF5Vciiz8gX6X1/JjoNK1aG0mBmV3vvw/e/+5w90OFqrwb/7csddAZjd8o4467Cd1Xhwya92/ft3QSmuM2GhUsAcbj8yOHHyvocfcF8ROpkBZ6APEFEpQKRCvtTXZTIpQOx67tfF7gNNCy5SFR3IOhDKbHqrZ9Uz7gXV14gkg0rte+TB3Q/eaieaPL1P8K+HSPkCJp3acO0/ZbeuR61BXg0fhrN8ieZ9i3+6464bUSkmU1cPdWYCpcZ+9l96VjzVtWwxKpU48awR534isCpWODYGNSMajnKpWIOxGhIWYqXe4jErn799xQ3f7B/UNs6c6+D7KdF3yZ6w+kmpLvJuIicYaWwl+B5gXl3KzZmxIqfQ4ORbzVhQEg6p6qFSsyKaSpOe7n2rYiX9Z6x16jtbKJuqRkIj0bVR4NXwgzGhZ/Wtfaj7n47KP/0NDZMeTVrwRiMoXZzEgFvfvoWKhBnuESfmDDUefgLps77mYGS2rsGdHbteWwUIoQq0Ki8noYLjvtRXZbRtCEyaX/xTcGs5rtHYyA6PO/4fWT32RTflOPGcGxPXf+FR6/ToVCtfU7hBUVCr6W0d0XPuDsn/3gad+vv32a6x4UkoV1nSEBYBam/6e9FuvhSZMZmaJsj5s87nLf7G80381HO0yc7EwGAqV42eyMaA1l0qSIgwLaugHEFq+3pefA2CU8OovyOCAgWnwX/76z+BX1fYYV+X9uAV8ZSzWhbCYSAXDqXUvp9a9Wod1k8sSDlXgIwgirP9xbgG5VOxd9czgHIogCIJnhcVEyh8YeHsNO46cFSwIgqeFBczKH8hu39T/2goAqN8zVgVBqAJhAQAiO07PqiXuf0g3CILgXWExkQ4EMhveoEIe6/OobkEQqibCYlY+f27Xlp4XnwZmeVcoCIKHhQUAiMDc//pKQERZ1SIIgpeFxUQqEEq/87oz0AeSFQqC4OkIi1n5fPm9uw4+8ytw63UIgiB4VFgATKxsX+/KZ4C4EkWLBEEQYZXTWMofyO3amtuzDaC+D5IUBMHrwgJApZ10f88LTwAAy2k6giB4WVjMrPyB3peWsuNIVigIgqeFBUzK9uX37crt2iJZoSAI3hYWACpNuczBpx8GOWFVEASPC4uZVDDcs/zJYtd+2aYjCIKnhQXMyrJL/T2ZTW8BgGzTEQTBw8KCwVywZ8VTACDFZwVB8LSwmEgHw/1rXiweeFeyQkEQPB5hAVqWM9A38PYayQoFQfC6sIAZUHcvfwoAUElWKAiCh4XFRDoUTr2+Mv37tYBKgixBEDwcYQGgUiaf61/z4mDAJQiC4FlhMbHyB1JrV7NxUClZRioIgneFBUw6EEyvX5dau1rOWBUEwdvCAgBEKhVTb7wCIAGWIAjeFhYTq0Cw/7UVcpqOIAiej7CYtD+Y3bahd/VSQJS6yYIgeFhYhxLDrucWAwDKGauCIHhZWOzWTd6+SU7TEQTB8xEWs7J9xQPvdr/wJMg2HUEQvJ4SMoNSfS8vAwBUSjpJEAbvCouJVCCY3bah2LUPEEGm3gVB8G6EBaAsu9R94OAS94xVmcYSBMHDwnK36fQsf5IKeTlNRxAETwsLmNDnL+zdldu+EWTqXRAETwsLAJWiYsFdkCUIguBpYTGRCoR6X1pq0inZpiMIgqeFBcxo26W+rsymt4BZtukIguDpVU4IyKVS13O/BkSQbTqCIMLy8sUxGR2K9K1emtu5BZWSg+wFQYTladCynFTfwJuvgizIEgQRltcvkBlsu++3ywEYUbbpCIIIy9NZIelAOLX2pcymd0BJ3WRBEGF5PCvUivLZ9DuvuwaTPhMEEZans0K0fb2rnmEyiHKajiCIsDyeFQbDqbfXyGk6giDCqgYQwXF6XnxaOkwQRFhVEGShP5DZsI6dkhRvEAQRlseNxdofyO7Y3PvSs8DMxkjPCYIIy9tZIZmelp8HREDZpiMIIixvZ4UqEMxsWGeyaSneIAgiLK9nhcr25/ds71q2GACkeIMgiLC8rSxgtOzuZYuZSE7TEQ532BhT9k9FDkaRiY7DwKqmiyVW/kBu99bCuzsCYyYAE8juQuHPPJGV8gfKaRWtAUD5Q+WclEAENuHO6QDAzCKuWhEWMGpdSvX1rFrSevGlTIyywkH4gNGilBlI7V/8H6A1MJcnhCFC2x5Y9wr6/OVyFhujgpHmMy8AABRd1ZCwgImU7etd+XTLhZ9DbQGwFPYT/oexwqgtp79nxz2LyrmbCwEY0OdTgWBZNl2gtpyBvqYzzve3tknSMEzCQqzUWzxm5fPn9+zI79keHDcJiEGJsIQPSgmthkQFHpxclmks1NpkB/wjR7ddejWwPH0Poz8rYhXjVO6KUWsnO9C97NcAKEsbhMNJuLw56Y5am1zW19favfBOHWkYfNILQywsJvIlmtGdNahMVqiD4YPP/qrYfUAWZAlVimsrK9LQvvCOcMc0JiO2GgZhoVKUz0Wnzw6Nn0zFfEX6gFlZvlJvV2bjmyBnrArVaCulKJ+3Ig0Tv/Z/w+1T2TiyQ3a4IixkU7JiieiMOVTIV2y1FANA38vLJIoWqtJWTkkFQ+1X3xE75iQ2DmpLmmXYUkJAZGPic09XvkCFwh8mUsFw7+qlhf17UCmQVe9C1egK2Rh2nEnf+E50+mx2xFbDLSxEZbKZcPuR4SlHUT4HlQmylLacgX63bjKTTGMJ1WErIGLjTPrGdwZjK0tsNewsGhbCJtYSIgBEp812+nvSG99wfz4qhahMZsBdCxZqn4rakjp4gJkK+YE3X43NPF5Vciiz8gX6X1/JjoNK1aG0mBmV3vvw/e/+5w90OFqrwb/7csddAZjd8o4467Cd1Xhwya92/ft3QSmuM2GhUsAcbj8yOHHyvocfcF8ROpkBZ6APEFEpQKRCvtTXZTIpQOx67tfF7gNNCy5SFR3IOhDKbHqrZ9Uz7gXV14gkg0rte+TB3Q/eaieaPL1P8K+HSPkCJp3acO0/ZbeuR61BXg0fhrN8ieZ9i3+6464bUSkmU1cPdWYCpcZ+9l96VjzVtWwxKpU48awR534isCpWODYGNSMajnKpWIOxGhIWYqXe4jErn799xQ3f7B/UNs6c6+D7KdF3yZ6w+kmpLvJuIicYaWwl+B5gXl3KzZmxIqfQ4ORbzVhQEg6p6qFSsyKaSpOe7n2rYiX9Z6x16jtbKJuqRkIj0bVR4NXwgzGhZ/Wtfaj7n47KP/0NDZMeTVrwRiMoXZzEgFvfvoWKhBnuESfmDDUefgLps77mYGS2rsGdHbteWwUIoQq0Ki8noYLjvtRXZbRtCEyaX/xTcGs5rtHYyA6PO/4fWT32RTflOPGcGxPXf+FR6/ToVCtfU7hBUVCr6W0d0XPuDsn/3gad+vv32a6x4UkoV1nSEBYBam/6e9FuvhSZMZmaJsj5s87nLf7G80381HO0yc7EwGAqV42eyMaA1l0qSIgwLaugHEFq+3pefA2CU8OovyOCAgWnwX/76z+BX1fYYV+X9uAV8ZSzWhbCYSAXDqXUvp9a9Wod1k8sSDlXgIwgirP9xbgG5VOxd9czgHIogCIJnhcVEyh8YeHsNO46cFSwIgqeFBczKH8hu39T/2goAqN8zVgVBqAJhAQAiO07PqiXuf0g3CILgXWExkQ4EMhveoEIe6/OobkEQqibCYlY+f27Xlp4XnwZmeVcoCIKHhQUAiMDc//pKQERZ1SIIgpeFxUQqEEq/87oz0AeSFQqC4OkIi1n5fPm9uw4+8ytw63UIgiB4VFgATKxsX+/KZ4C4EkWLBEEQYZXTWMofyO3amtuzDaC+D5IUBMHrwgJApZ10f88LTwAAy2k6giB4WVjMrPyB3peWsuNIVigIgqeFBUzK9uX37crt2iJZoSAI3hYWACpNuczBpx8GOWFVEASPC4uZVDDcs/zJYtd+2aYjCIKnhQXMyrJL/T2ZTW8BgGzTEQTBw8KCwVywZ8VTACDFZwVB8LSwmEgHw/1rXiweeFeyQkEQPB5hAVqWM9A38PYayQoFQfC6sIAZUHcvfwoAUElWKAiCh4XFRDoUTr2+Mv37tYBKgixBEDwcYQGgUiaf61/z4mDAJQiC4FlhMbHyB1JrV7NxUClZRioIgneFBUw6EEyvX5dau1rOWBUEwdvCAgBEKhVTb7wCIAGWIAjeFhYTq0Cw/7UVcpqOIAiej7CYtD+Y3bahd/VSQJS6yYIgeFhYhxLDrucWAwDKGauCIHhZWOzWTd6+SU7TEQTB8xEWs7J9xQPvdr/wJMg2HUEQvJ4SMoNSfS8vAwBUSjpJEAYvCouJVCCY3bah2LUPEEGm3gVB8G6EBaAsu9R94OAS94xVmcYSBMHDwnK36fQsf5IKeTlNRxAETwsLmNDnL+zdldu+EWTqXRAETwsLAJWiYsFdkCUIguBpYTGRCoR6X1pq0inZpiMIgqeFBcxo26W+rsymt4BZtukIguDpVU4IyKVS13O/BkSQbTqCIMLy8sUxGR2K9K1emtu5BZWSg+wFQYTladCynFTfwJuvgizIEgQRltcvkBlsu++3ywEYUbbpCIIIy9NZIelAOLX2pcymd0BJ3WRBEGF5PCvUivLZ9DuvuwaTPhMEEZans0K0fb2rnmEyiHKajiCIsDyeFQbDqbfXyGk6giDCqgYQwXF6XnxaOkwQRFhVEGShP5DZsI6dkhRvEAQRlseNxdofyO7Y3PvSs8DMxkjPCYIIy9tZIZmelp8HREDZpiMIIixvZ4UqEMxsWGeyaSneIAgiLK9nhcr25/ds71q2GACkeIMgiLC8rSxgtOzuZYuZSE7TEQ532BhT9k9FDkaRiY7DwKqmiyVW/kBu99bCuzsCYyYAE8juQuHPPJGV8gfKaRWtAUD5Q+WclEAENuHO6QDAzCKuWhEWMGpdSvX1rFrSevGlTIyywkH4gNGilBlI7V/8H6A1MJcnhCFC2x5Y9wr6/OVyFhujgpHmMy8AABRd1ZCwgImU7etd+XTLhZ9DbQGwFPYT/oexwqgtp79nxz2LyrmbCwEY0OdTgWBZNl2gtpyBvqYzzve3tknSMEzCQqzUWzxm5fPn9+zI79keHDcJiEGJsIQPSgmthkQFHpxclmks1NpkB/wjR7ddejWwPH0Poz8rYhXjVO6KUWsnO9C97NcAKEsbhMNJuLw56Y5am1zW19favfBOHWkYfNILQywsJvIlmtGdNahMVqiD4YPP/qrYfUAWZAlVimsrK9LQvvCOcMc0JiO2GgZhoVKUz0Wnzw6Nn0zFfEX6gFlZvlJvV2bjmyBnrArVaCulKJ+3Ig0Tv/Z/w+1T2TiyQ3a4IixkU7JiieiMOVTIV2y1FANA38vLJIoWqtJWTkkFQ+1X3xE75iQ2DmpLmmXYUkJAZGPic09XvkCFwh8mUsFw7+qlhf17UCmQVe9C1egK2Rh2nEnf+E50+mx2xFbDLSxEZbKZcPuR4SlHUT4HlQmylLacgX63bjKTTGMJ1WErIGLjTPrGdwZjK0tsNewsGhbCJtYSIgBEp812+nvSG99wfz4qhahMZsBdCxZqn4rakjp4gJkK+YE3X43NPF5Vciiz8gX6X1/JjoNK1aG0mBmV3vvw/e/+5w90OFqrwb/7csddAZjd8o4467Cd1Xhwya92/ft3QSmuM2GhUsAcbj8yOHHyvocfcF8ROpkBZ6APEFEpQKRCvtTXZTIpQOx67tfF7gNNCy5SFR3IOhDKbHqrZ9Uz7gXV14gkg0rte+TB3Q/eaieaPL1P8K+HSPkCJp3acO0/ZbeuR61BXg0fhrN8ieZ9i3+6464bUSkmU1cPdWYCpcZ+9l96VjzVtWwxKpU48awR534isCpWODYGNSMajnKpWIOxGhIWYqXe4jErn799xQ3f7B/UNs6c6+D7KdF3yZ6w+kmpLvJuIicYaWwl+B5gXl3KzZmxIqfQ4ORbzVhQEg6p6qFSsyKaSpOe7n2rYiX9Z6x16jtbKJuqRkIj0bVR4NXwgzGhZ/Wtfaj7n47KP/0NDZMeTVrwRiMoXZzEgFvfvoWKhBnuESfmDDUefgLps77mYGS2rsGdHbteWwUIoQq0Ki8noYLjvtRXZbRtCEyaX/xTcGs5rtHYyA6PO/4fWT32RTflOPGcGxPXf+FR6/ToVCtfU7hBUVCr6W0d0XPuDsn/3gad+vv32a6x4UkoV1nSEBYBam/6e9FuvhSZMZmaJsj5s87nLf7G80381HO0yc7EwGAqV42eyMaA1l0qSIgwLaugHEFq+3pefA2CU8OovyOCAgWnwX/76z+BX1fYYV+X9uAV8ZSzWhbCYSAXDqXUvp9a9Wod1k8sSDlXgIwgirP9xbgG5VOxd9czgHIogCIJnhcVEyh8YeHsNO46cFSwIgqeFBczKH8hu39T/2goAqN8zVgVBqAJhAQAiO07PqiXuf0g3CILgXWExkQ4EMhveoEIe6/OobkEQqibCYlY+f27Xlp4XnwZmeVcoCIKHhQUAiMDc//pKQERZ1SIIgpeFxUQqEEq/87oz0AeSFQqC4OkIi1n5fPm9uw4+8ytw63UIgiB4VFgATKxsX+/KZ4C4EkWLBEEQYZXTWMofyO3amtuzDaC+D5IUBMHrwgJApZ10f88LTwAAy2k6giB4WVjMrPyB3peWsuNIVigIgqeFBUzK9uX37crt2iJZoSAI3hYWACpNuczBpx8GOWFVEASPC4uZVDDcs/zJYtd+2aYjCIKnhQXMyrJL/T2ZTW8BgGzTEQTBw8KCwVywZ8VTACDFZwVB8LSwmEgHw/1rXiweeFeyQkEQPB5hAVqWM9A38PYayQoFQfC6sIAZUHcvfwoAUElWKAiCh4XFRDoUTr2+Mv37tYBKgixBEDwcYQGgUiaf61/z4mDAJQiC4FlhMbHyB1JrV7NxUClZRioIgneFBUw6EEyvX5dau1rOWBUEwdvCAgBEKhVTb7wCIAGWIAjeFhYTq0Cw/7UVcpqOIAiej7CYtD+Y3bahd/VSQJS6yYIgeFhYhxLDrucWAwDKGauCIHhZWOzWTd6+SU7TEQTB8xEWs7J9xQPvdr/wJMg2HUEQvJ4SMoNSfS8vAwBUSjpJEAYvCouJVCCY3bah2LUPEEGm3gVB8G6EBaAsu9R94OAS94xVmcYSBMHDwnK36fQsf5IKeTlNRxAETwsLmNDnL+zdldu+EWTqXRAETwsLAJWiYsFdkCUIguBpYTGRCoR6X1pq0inZpiMIgqeFBcxo26W+rsymt4BZtukIguDpVU4IyKVS13O/BkSQbTqCIMLy8sUxGR2K9K1emtu5BZWSg+wFQYTladCynFTfwJuvgizIEgQRltcvkBlsu++3ywEYUbbpCIIIy9NZIelAOLX2pcymd0BJ3WRBEGF5PCvUivLZ9DuvuwaTPhMEEZans0K0fb2rnmEyiHKajiCIsDyeFQbDqbfXyGk6giDCqgYQwXF6XnxaOkwQRFhVEGShP5DZsI6dkhRvEAQRlseNxdofyO7Y3PvSs8DMxkjPCYIIy9tZIZmelp8HREDZpiMIIixvZ4UqEMxsWGeyaSneIAgiLK9nhcr25/ds71q2GACkeIMgiLC8rSxgtOzuZYuZSE7TEQ532BhT9k9FDkaRiY7DwKqmiyVW/kBu99bCuzsCYyYAE8juQuHPPJGV8gfKaRWtAUD5Q+WclEAENuHO6QDAzCKuWhEWMGpdSvX1rFrSevGlTIyywkH4gNGilBlI7V/8H6A1MJcnhCFC2x5Y9wr6/OVyFhujgpHmMy8AABRd1ZCwgImU7etd+XTLhZ9DbQGwFPYT/oexwqgtp79nxz2LyrmbCwEY0OdTgWBZNl2gtpyBvqYzzve3tknSMEzCQqzUWzxm5fPn9+zI79keHDcJiEGJsIQPSgmthkQFHpxclmks1NpkB/wjR7ddejWwPH0Poz8rYhXjVO6KUWsnO9C97NcAKEsbhMNJuLw56Y5am1zW19favfBOHWkYfNILQywsJvIlmtGdNahMVqiD4YPP/qrYfUAWZAlVimsrK9LQvvCOcMc0JiO2GgZhoVKUz0Wnzw6Nn0zFfEX6gFlZvlJvV2bjmyBnrArVaCulKJ+3Ig0Tv/Z/w+1T2TiyQ3a4IixkU7JiieiMOVTIV2y1FANA38vLJIoWqtJWTkkFQ+1X3xE75iQ2DmpLmmXYUkJAZGPic09XvkCFwh8mUsFw7+qlhf17UCmQVe9C1egK2Rh2nEnf+E50+mx2xFbDLSxEZbKZcPuR4SlHUT4HlQmylLacgX63bjKTTGMJ1WErIGLjTPrGdwZjK0tsNewsGhbCJtYSIgBEp812+nvSG99wfz4qhahMZsBdCxZqn4rakjp4gJkK+YE3X43NPF5Vciiz8gX6X1/JjoNK1aG0mBmV3vvw/e/+5w90OFqrwb/7csddAZjd8o4467Cd1Xhwya92/ft3QSmuM2GhUsAcbj8yOHHyvocfcF8ROpkBZ6APEFEpQKRCvtTXZTIpQOx67tfF7gNNCy5SFR3IOhDKbHqrZ9Uz7gXV14gkg0rte+TB3Q/eaieaPL1P8K+HSPkCJp3acO0/ZbeuR61BXg0fhrN8ieZ9i3+6464bUSkmU1cPdWYCpcZ+9l96VjzVtWwxKpU48awR534isCpWODYGNSMajnKpWIOxGhIWYqXe4jErn799xQ3f7B/UNs6c6+D7KdF3yZ6w+kmpLvJuIicYaWwl+B5gXl3KzZmxIqfQ4ORbzVhQEg6p6qFSsyKaSpOe7n2rYiX9Z6x16jtbKJuqRkIj0bVR4NXwgzGhZ/Wtfaj7n47KP/0NDZMeTVrwRiMoXZzEgFvfvoWKhBnuESfmDDUefgLps77mYGS2rsGdHbteWwUIoQq0Ki8noYLjvtRXZbRtCEyaX/xTcGs5rtHYyA6PO/4fWT32RTflOPGcGxPXf+FR6/ToVCtfU7hBUVCr6W0d0XPuDsn/3gad+vv32a6x4UkoV1nSEBYBam/6e9FuvhSZMZmaJsj5s87nLf7G80381HO0yc7EwGAqV42eyMaA1l0qSIgwLaugHEFq+3pefA2CU8OovyOCAgWnwX/76z+BX1fYYV+X9uAV8ZSzWhbCYSAXDqXUvp9a9Wod1k8sSDlXgIwgirP9xbgG5VOxd9czgHIogCIJnhcVEyh8YeHsNO46cFSwIgqeFBczKH8hu39T/2goAqN8zVgVBqAJhAQAiO07PqiXuf0g3CILgXWExkQ4EMhveoEIe6/OobkEQqibCYlY+f27Xlp4XnwZmeVcoCIKHhQUAiMDc//pKQERZ1SIIgpeFxUQqEEq/87oz0AeSFQqC4OkIi1n5fPm9uw4+8ytw63UIgiB4VFgATKxsX+/KZ4C4EkWLBEEQYZXTWMofyO3amtuzDaC+D5IUBMHrwgJApZ10f88LTwAAy2k6giB4WVjMrPyB3peWsuNIVigIgqeFBUzK9uX37crt2iJZoSAI3hYWACpNuczBpx8GOWFVEASPC4uZVDDcs/zJYtd+2aYjCIKnhQXMyrJL/T2ZTW8BgGzTEQTBw8KCwVywZ8VTACDFZwVB8LSwmEgHw/1rXiweeFeyQkEQPB5hAVqWM9A38PYayQoFQfC6sIAZUHcvfwoAUElWKAiCh4XFRDoUTr2+Mv37tYBKgixBEDwcYQGgUiaf61/z4mDAJQiC4FlhMbHyB1JrV7NxUClZRioIgneFBUw6EEyvX5dau1rOWBUEwdvCAgBEKhVTb7wCIAGWIAjeFhYTq0Cw/7UVcpqOIAiej7CYtD+Y3bahd/VSQJS6yYIgeFhYhxLDrucWAwDKGauCIHhZWOzWTd6+SU7TEQTB8xEWs7J9xQPvdr/wJMg2HUEQvJ4SMoNSfS8vAwBUSjpJEAYvCouJVCCY3bah2LUPEEGm3gVB8G6EBaAsu9R94OAS94xVmcYSBMHDwnK36fQsf5IKeTlNRxAETwsLmNDnL+zdldu+EWTqXRAETwsLAJWiYsFdkCUIguBpYTGRCoR6X1pq0inZpiMIgqeFBcxo26W+rsymt4BZtukIguDpVU4IyKVS13O/BkSQbTqCIMLy8sUxGR2K9K1emtu5BZWSg+wFQYTladCynFTfwJuvgizIEgQRltcvkBlsu++3ywEYUbbpCIIIy9NZIelAOLX2pcymd0BJ3WRBEGF5PCvUivLZ9DuvuwaTPhMEEZans0K0fb2rnmEyiHKajiCIsDyeFQbDqbfXyGk6giDCqgYQwXF6XnxaOkwQRFhVEGShP5DZsI6dkhRvEAQRlseNxdofyO7Y3PvSs8DMxkjPCYIIy9tZIZmelp8HREDZpiMIIixvZ4UqEMxsWGeyaSneIAgiLK9nhcr25/ds71q2GACkeIMgiLC8rSxgtOzuZYuZSE7TEQ532BhT9k9FDkaRiY7DwKqmiyVW/kBu99bCuzsCYyYAE8juQuHPPJGV8gfKaRWtAUD5Q+WclEAENuHO6QDAzCKuWhEWMGpdSvX1rFrSevGlTIyywkH4gNGilBlI7V/8H6A1MJcnhCFC2x5Y9wr6/OVyFhujgpHmMy8AABRd1ZCwgImU7etd+XTLhZ9DbQGwFPYT/oexwqgtp79nxz2LyrmbCwEY0OdTgWBZNl2gtpyBvqYzzve3tknSMEzCQqzUWzxm5fPn9+zI79keHDcJiEGJsIQPSgmthkQFHpxclmks1NpkB/wjR7ddejWwPH0Poz8rYhXjVO6KUWsnO9C97NcAKEsbhMNJuLw56Y5am1zW19favfBOHWkYfNILQywsJvIlmtGdNahMVqiD4YPP/qrYfUAWZAlVimsrK9LQvvCOcMc0JiO2GgZhoVKUz0Wnzw6Nn0zFfEX6gFlZvlJvV2bjmyBnrArVaCulKJ+3Ig0Tv/Z/w+1T2TiyQ3a4IixkU7JiieiMOVTIV2y1FANA38vLJIoWqtJWTkkFQ+1X3xE75iQ2DmpLmmXYUkJAZGPic09XvkCFwh8mUsFw7+qlhf17UCmQVe9C1egK2Rh2nEnf+E50+mx2xFbDLSxEZbKZcPuR4SlHUT4HlQmylLacgX63bjKTTGMJ1WErIGLjTPrGdwZjK0tsNewsGhbCJtYSIgBEp812+nvSG99wfz4qhahMZsBdCxZqn4rakjp4gJkK+YE3X43NPF5Vciiz8gX6X1/JjoNK1aG0mBmV3vvw/e/+5w90OFqrwb/7csddAZjd8o4467Cd1Xhwya92/ft3QSmuM2GhUsAcbj8yOHHyvocfcF8ROpkBZ6APEFEpQKRCvtTXZTIpQOx67tfF7gNNCy5SFR3IOhDKbHqrZ9Uz7gXV14gkg0rte+TB3Q/eaieaPL1P8K+HSPkCJp3acO0/ZbeuR61BXg0fhrN8ieZ9i3+6464bUSkmU1cPdWYCpcZ+9l96VjzVtWwxKpU48awR534isCpWODYGNSMajnKpWIOxGhIWYqXe4jErn799xQ3f7B/UNs6c6+D7KdF3yZ6w+kmpLvJuIicYaWwl+B5gXl3KzZmxIqfQ4ORbzVhQEg6p6qFSsyKaSpOe7n2rYiX9Z6x16jtbKJuqRkIj0bVR4NXwgzGhZ/Wtfaj7n47KP/0NDZMeTVrwRiMoXZzEgFvfvoWKhBnuESfmDDUefgLps77mYGS2rsGdHbteWwUIoQq0Ki8noYLjvtRXZbRtCEyaX/xTcGs5rtHYyA6PO/4fWT32RTflOPGcGxPXf+FR6/ToVCtfU7hBUVCr6W0d0XPuDsn/3gad+vv32a6x4UkoV1nSEBYBam/6e9FuvhSZMZmaJsj5s87nLf7G80381HO0yc7EwGAqV42eyMaA1l0qSIgwLaugHEFq+3pefA2CU8OovyOCAgWnwX/76z+BX1fYYV+X9uAV8ZSzWhbCYSAXDqXUvp9a9Wod1k8sSDlXgIwgirP9xbgG5VOxd9czgHIogCIJnhcVEyh8YeHsNO46cFSwIgqeFBczKH8hu39T/2goAqN8zVgVBqAJhAQAiO07PqiXuf0g3CILgXWExkQ4EMhveoEIe6/OobkEQqibCYlY+f27Xlp4XnwZmeVcoCIKHhQUAiMDc//pKQERZ1SIIgpeFxUQqEEq/87oz0AeSFQqC4OkIi1n5fPm9uw4+8ytw63UIgiB4VFgATKxsX+/KZ4C4EkWLBEEQYZXTWMofyO3amtuzDaC+D5IUBMHrwgJApZ10f88LTwAAy2k6giB4WVjMrPyB3peWsuNIVigIgqeFBUzK9uX37crt2iJZoSAI3hYWACpNuczBpx8GOWFVEASPC4uZVDDcs/zJYtd+2aYjCIKnhQXMyrJL/T2ZTW8BgGzTEQTBw8KCwVywZ8VTACDFZwVB8LSwmEgHw/1rXiweeFeyQkEQPB5hAVqWM9A38PYayQoFQfC6sIAZUHcvfwoAUElWKAiCh4XFRDoUTr2+Mv37tYBKgixBEDwcYQGgUiaf61/z4mDAJQiC4FlhMbHyB1JrV7NxUClZRioIgneFBUw6EEyvX5dau1rOWBUEwdvCAgBEKhVTb7wCIAGWIAjeFhYTq0Cw/7UVcpqOIAiej7CYtD+Y3bahd/VSQJS6yYIgeFhYhxLDrucWAwDKGauCIHhZWOzWTd6+SU7TEQTB8xEWs7J9xQPvdr/wJMg2HUEQvJ4SMoNSfS8vAwBUSjpJEAYvCouJVCCY3bah2LUPEEGm3gVB8G6EBaAsu9R94OAS94xVmcYSBMHDwnK36fQsf5IKeTlNRxAETwsLmNDnL+zdldu+EWTqXRAETwsLAJWiYsFdkCUIguBpYTGRCoR6X1pq0inZpiMIgqeFBcxo26W+rsymt4BZtukIguDpVU4IyKVS13O/BkSQbTqCIMLy8sUxGR2K9K1emtu5BZWSg+wFQYTladCynFTfwJuvgizIEgQRltcvkBlsu++3ywEYUbbpCIIIy9NZIelAOLX2pcymd0BJ3WRBEGF5PCvUivLZ9DuvuwaTPhMEEZans0K0fb2rnmEyiHKajiCIsDyeFQbDqbfXyGk6giDCqgYQwXF6XnxaOkwQRFhVEGShP5DZsI6dkhRvEAQRlseNxdofyO7Y3PvSs8DMxkjPCYIIy9tZIZmelp8HREDZpiMIIixvZ4UqEMxsWGeyaSneIAgiLK9nhcr25/ds71q2GACkeIMgiLC8rSxgtOzuZYuZSE7TEQ532BhT9k9FDkaRiY7DwKqmiyVW/kBu99bCuzsCYyYAE8juQuHPPJGV8gfKaRWtAUD5Q+WclEAENuHO6QDAzCKuWhEWMGpdSvX1rFrSevGlTIyywkH4gNGilBlI7V/8H6A1MJcnhCFC2x5Y9wr6/OVyFhujgpHmMy8AABRd1ZCwgImU7etd+XTLhZ9DbQGwFPYT";
+// ── NOBL Logo (PNG, transparent background) ───────────────────────────────────
+const LOGO_SRC = "data:image/png;base64,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";
 
 // ── Dog Breeds ────────────────────────────────────────────────────────────────
 const DOG_BREEDS = [
@@ -44,11 +43,12 @@ const DOG_BREEDS = [
   "Portuguese Water Dog","Lagotto Romagnolo","Other",
 ];
 
-// ── Photo zones ───────────────────────────────────────────────────────────────
+// ── Photo zones with SVG guides ───────────────────────────────────────────────
 const PHOTO_ZONES = [
   {
     id:"back", label:"Back & Top Coat", shortLabel:"Back",
     tip:"Stand your dog naturally. Hold phone directly above their back, about 2 feet up. Capture neck to tail.",
+    checkTips:["Photo shows the dog's back from neck to tail","Taken from above (top-down)","Adequate lighting — flash recommended"],
     svgGuide:(
       <svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
         <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
@@ -67,6 +67,7 @@ const PHOTO_ZONES = [
   {
     id:"belly", label:"Belly & Undercoat", shortLabel:"Belly",
     tip:"Gently roll your dog onto their back. Hold phone about 18 inches above. Capture chest to groin.",
+    checkTips:["Dog is on their back, belly facing up","Full belly area from chest to groin is visible","Adequate lighting — flash recommended"],
     svgGuide:(
       <svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
         <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
@@ -83,6 +84,7 @@ const PHOTO_ZONES = [
   {
     id:"ears", label:"Ears (Both Sides)", shortLabel:"Ears",
     tip:"Fold one ear back to show the inner flap. Hold phone 8–10 inches away. Repeat for the other ear.",
+    checkTips:["Ear is folded back showing inner flap","Inner ear skin is clearly visible","Photo taken 8–10 inches away"],
     svgGuide:(
       <svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
         <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
@@ -98,6 +100,7 @@ const PHOTO_ZONES = [
   {
     id:"paws", label:"Paws & Between Toes", shortLabel:"Paws",
     tip:"Hold a paw and gently spread the toes. Hold phone 6–8 inches away. Capture skin between toes.",
+    checkTips:["Toes are spread apart","Skin between toes is visible","Photo taken 6–8 inches away"],
     svgGuide:(
       <svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
         <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
@@ -116,6 +119,7 @@ const PHOTO_ZONES = [
   {
     id:"face", label:"Face & Muzzle", shortLabel:"Face",
     tip:"Get your dog to face you at eye level. Hold phone about 12 inches away. Capture muzzle, eyes, and forehead.",
+    checkTips:["Dog is facing the camera","Photo taken at eye level","Muzzle and eyes clearly visible"],
     svgGuide:(
       <svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
         <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
@@ -138,6 +142,54 @@ const PHOTO_ZONES = [
 const DIET_OPTIONS = ["Kibble (dry food)","Wet / canned food","Raw diet (BARF)","Home-cooked meals","Mixed / combination","Prescription diet","Other"];
 const WEEKS = ["Baseline","Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"];
 
+// ── Soft Photo Validation ─────────────────────────────────────────────────────
+// Checks basic image properties client-side before sending to AI.
+// Returns {ok, warnings[]} — never hard-blocks, only warns.
+async function softValidatePhoto(file) {
+  return new Promise(resolve => {
+    const warnings = [];
+    // Check file size — under 20KB is almost certainly a blank/broken image
+    if (file.size < 20000) {
+      warnings.push("This photo looks very small — make sure the image saved correctly.");
+    }
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      // Check resolution — anything under 200x200 is too small to analyze
+      if (img.width < 200 || img.height < 200) {
+        warnings.push("Photo resolution is very low. Try getting closer or using a higher quality setting.");
+      }
+      // Check if image is mostly one color (likely blank/dark/solid)
+      const canvas = document.createElement("canvas");
+      canvas.width = 40; canvas.height = 40;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, 40, 40);
+      const data = ctx.getImageData(0, 0, 40, 40).data;
+      let rSum=0,gSum=0,bSum=0,rVar=0,gVar=0,bVar=0;
+      const n = data.length/4;
+      for(let i=0;i<data.length;i+=4){ rSum+=data[i]; gSum+=data[i+1]; bSum+=data[i+2]; }
+      const rMean=rSum/n, gMean=gSum/n, bMean=bSum/n;
+      for(let i=0;i<data.length;i+=4){
+        rVar+=Math.pow(data[i]-rMean,2);
+        gVar+=Math.pow(data[i+1]-gMean,2);
+        bVar+=Math.pow(data[i+2]-bMean,2);
+      }
+      const variance = (rVar+gVar+bVar)/(3*n);
+      // Very low variance = almost solid color = likely dark/blank photo
+      if(variance < 150) {
+        const avgBrightness = (rMean+gMean+bMean)/3;
+        if(avgBrightness < 40) warnings.push("Photo appears very dark. Please enable flash and try again.");
+        else if(avgBrightness > 230) warnings.push("Photo appears overexposed (too bright). Try moving to a different lighting angle.");
+        else warnings.push("Photo appears to have very little detail. Make sure the correct body area is in frame.");
+      }
+      URL.revokeObjectURL(url);
+      resolve({ ok: warnings.length===0, warnings });
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve({ ok:false, warnings:["Could not read this image. Please try a different photo."] }); };
+    img.src = url;
+  });
+}
+
 // ── PDF Generator ─────────────────────────────────────────────────────────────
 async function generatePDF(dogInfo, results, weekLabel) {
   if (!window.jspdf) {
@@ -150,67 +202,69 @@ async function generatePDF(dogInfo, results, weekLabel) {
   }
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation:"portrait", unit:"mm", format:"a4" });
-  const W = 210, H = 297, m = 18;
-  let y = 0;
+  const W=210, H=297, m=18;
+  let y=0;
 
-  // Forest header bar
+  // Forest header
   doc.setFillColor(60,92,83);
-  doc.rect(0,0,W,38,"F");
+  doc.rect(0,0,W,40,"F");
 
-  // Logo
-  try { doc.addImage(LOGO,"PNG",m,7,38,18); } catch(e) {
-    doc.setTextColor(255,255,255); doc.setFontSize(18); doc.setFont("helvetica","bold");
-    doc.text("NOBL",m,22);
+  // Logo — place on dark forest background (PNG has transparent bg so it shows on green)
+  try {
+    doc.addImage(LOGO_SRC,"PNG",m,6,50,26);
+  } catch(e) {
+    doc.setTextColor(204,102,51); doc.setFontSize(22); doc.setFont("helvetica","bold");
+    doc.text("NOBL",m,26);
   }
 
-  // Header text
+  // Header right
   doc.setTextColor(168,205,216); doc.setFontSize(8); doc.setFont("helvetica","normal");
-  doc.text("COAT & SKIN TRACKER",W-m,13,{align:"right"});
-  doc.setTextColor(255,255,255); doc.setFontSize(10);
-  doc.text(weekLabel+" Report",W-m,23,{align:"right"});
-  doc.text(new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}),W-m,31,{align:"right"});
+  doc.text("COAT & SKIN TRACKER",W-m,14,{align:"right"});
+  doc.setTextColor(255,255,255); doc.setFontSize(11);
+  doc.text(weekLabel+" Report",W-m,24,{align:"right"});
+  doc.setFontSize(8); doc.setTextColor(168,205,216);
+  doc.text(new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}),W-m,32,{align:"right"});
 
-  y = 50;
+  y=52;
 
-  // Dog info band
+  // Dog info
   doc.setFillColor(241,241,240);
-  doc.roundedRect(m,y,W-m*2,24,3,3,"F");
+  doc.roundedRect(m,y,W-m*2,26,3,3,"F");
   doc.setTextColor(30,46,42); doc.setFontSize(13); doc.setFont("helvetica","bold");
-  doc.text(dogInfo.name||"—",m+6,y+9);
+  doc.text(dogInfo.name||"—",m+6,y+10);
   doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(74,102,96);
-  const dogMeta = [dogInfo.breed,dogInfo.age?"Age: "+dogInfo.age:"",dogInfo.diet,dogInfo.dietBrand].filter(Boolean).join("  ·  ");
-  doc.text(dogMeta,m+6,y+18);
-  if (dogInfo.email) { doc.setTextColor(77,142,160); doc.text(dogInfo.email,W-m,y+18,{align:"right"}); }
+  const meta=[dogInfo.breed,dogInfo.age?"Age: "+dogInfo.age:"",dogInfo.diet,dogInfo.dietBrand].filter(Boolean).join("  ·  ");
+  doc.text(meta,m+6,y+19);
+  if(dogInfo.email){ doc.setTextColor(77,142,160); doc.text(dogInfo.email,W-m,y+19,{align:"right"}); }
 
-  y += 32;
+  y+=34;
 
   // Score
-  const scores = results.filter(r=>r.score).map(r=>r.score);
-  const avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : "—";
-  const sn = parseFloat(avg);
-  const scoreLabel = sn>=9?"Excellent":sn>=7.5?"Good":sn>=6?"Fair":"Needs Attention";
-  const sc = sn>=8?[114,170,185]:sn>=6?[60,92,83]:[204,102,51];
+  const scores=results.filter(r=>r.score).map(r=>r.score);
+  const avg=scores.length?(scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1):"—";
+  const sn=parseFloat(avg);
+  const lbl=sn>=9?"Excellent":sn>=7.5?"Good":sn>=6?"Fair":"Needs Attention";
+  const sc=sn>=8?[114,170,185]:sn>=6?[60,92,83]:[204,102,51];
 
   doc.setDrawColor(...sc); doc.setLineWidth(2.5);
   doc.circle(m+16,y+13,13,"S");
   doc.setTextColor(...sc); doc.setFontSize(15); doc.setFont("helvetica","bold");
   doc.text(String(avg),m+16,y+15,{align:"center"});
   doc.setTextColor(30,46,42); doc.setFontSize(17); doc.setFont("helvetica","bold");
-  doc.text(scoreLabel,m+36,y+11);
+  doc.text(lbl,m+36,y+11);
   doc.setFontSize(9); doc.setFont("helvetica","normal"); doc.setTextColor(122,153,144);
   doc.text("Overall skin & coat score  ·  "+weekLabel,m+36,y+19);
 
-  y += 34;
+  y+=34;
 
   // Zone bars
   doc.setFontSize(8); doc.setFont("helvetica","bold"); doc.setTextColor(60,92,83);
   doc.text("RESULTS BY AREA",m,y); y+=7;
-
   results.forEach(r=>{
-    const zone = PHOTO_ZONES.find(z=>z.id===r.zoneId);
-    const s2 = r.score||0;
-    const bc = s2>=8?[114,170,185]:s2>=6?[60,92,83]:[204,102,51];
-    const bw = W-m*2-36;
+    const zone=PHOTO_ZONES.find(z=>z.id===r.zoneId);
+    const s2=r.score||0;
+    const bc=s2>=8?[114,170,185]:s2>=6?[60,92,83]:[204,102,51];
+    const bw=W-m*2-36;
     doc.setFontSize(9); doc.setFont("helvetica","normal"); doc.setTextColor(74,102,96);
     doc.text(zone?.shortLabel||"",m,y+4);
     doc.setFillColor(220,228,226); doc.roundedRect(m+20,y-1,bw,6,1,1,"F");
@@ -218,97 +272,120 @@ async function generatePDF(dogInfo, results, weekLabel) {
     doc.setFont("helvetica","bold"); doc.setTextColor(...bc);
     doc.text(String(s2),W-m,y+4,{align:"right"});
     y+=10;
-    if(r.photoNote){
-      doc.setFontSize(7.5); doc.setFont("helvetica","italic"); doc.setTextColor(122,153,144);
-      doc.text("i  "+r.photoNote,m+20,y); y+=5;
-    }
+    if(r.photoNote){ doc.setFontSize(7.5); doc.setFont("helvetica","italic"); doc.setTextColor(122,153,144); doc.text("i  "+r.photoNote,m+20,y); y+=5; }
   });
 
   y+=4;
 
-  // Findings header
+  // Findings
   doc.setFillColor(60,92,83); doc.rect(m,y,W-m*2,7,"F");
   doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont("helvetica","bold");
   doc.text("KEY FINDINGS",m+4,y+5); y+=12;
-
   results.flatMap(r=>r.observations||[]).forEach(obs=>{
     doc.setFillColor(114,170,185); doc.circle(m+2,y+1,1.2,"F");
     doc.setTextColor(74,102,96); doc.setFontSize(9); doc.setFont("helvetica","normal");
-    const lines = doc.splitTextToSize(obs,W-m*2-8);
-    doc.text(lines,m+6,y+2);
-    y+=lines.length*5+2;
+    const lines=doc.splitTextToSize(obs,W-m*2-8);
+    doc.text(lines,m+6,y+2); y+=lines.length*5+2;
     if(y>H-70){doc.addPage();y=m;}
   });
 
   y+=4;
 
   // Diet signal
-  const ds = results.find(r=>r.dietSignals)?.dietSignals;
+  const ds=results.find(r=>r.dietSignals)?.dietSignals;
   if(ds){
-    const dsL = doc.splitTextToSize(ds,W-m*2-14);
-    const dsH = dsL.length*5+14;
+    const dsL=doc.splitTextToSize(ds,W-m*2-14);
+    const dsH=dsL.length*5+14;
     if(y+dsH>H-m){doc.addPage();y=m;}
     doc.setFillColor(232,242,246); doc.roundedRect(m,y,W-m*2,dsH,3,3,"F");
     doc.setFontSize(8); doc.setFont("helvetica","bold"); doc.setTextColor(77,142,160);
     doc.text("DIET SIGNAL",m+6,y+7);
     doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(30,46,42);
-    doc.text(dsL,m+6,y+13);
-    y+=dsH+6;
+    doc.text(dsL,m+6,y+13); y+=dsH+6;
   }
 
   // Recommendations
-  const recs = results.map(r=>r.recommendations).filter(Boolean).join(" ");
+  const recs=results.map(r=>r.recommendations).filter(Boolean).join(" ");
   if(recs){
-    const recL = doc.splitTextToSize(recs,W-m*2-14);
-    const recH = recL.length*5+14;
+    const recL=doc.splitTextToSize(recs,W-m*2-14);
+    const recH=recL.length*5+14;
     if(y+recH>H-m){doc.addPage();y=m;}
     doc.setFillColor(60,92,83); doc.roundedRect(m,y,W-m*2,recH,3,3,"F");
     doc.setFontSize(8); doc.setFont("helvetica","bold"); doc.setTextColor(168,205,216);
     doc.text("RECOMMENDATIONS",m+6,y+7);
     doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(241,241,240);
-    doc.text(recL,m+6,y+13);
-    y+=recH+6;
+    doc.text(recL,m+6,y+13); y+=recH+6;
   }
 
-  // Footer
-  const pages = doc.getNumberOfPages();
+  // Footer on every page
+  const pages=doc.getNumberOfPages();
   for(let p=1;p<=pages;p++){
     doc.setPage(p);
     doc.setFillColor(60,92,83); doc.rect(0,H-14,W,14,"F");
     doc.setTextColor(168,205,216); doc.setFontSize(7); doc.setFont("helvetica","normal");
     doc.text("NOBL Coat & Skin Tracker  ·  AI-assisted screening only. Not a substitute for veterinary advice.",m,H-5);
     doc.setTextColor(255,255,255);
-    doc.text("nobl.com",W-m,H-5,{align:"right"});
+    doc.text("NOBLFoods.com",W-m,H-5,{align:"right"});
   }
 
   doc.save(`NOBL-${(dogInfo.name||"Dog").replace(/\s+/g,"-")}-${weekLabel.replace(/\s+/g,"-")}-Report.pdf`);
 }
 
+// ── AI Analysis ───────────────────────────────────────────────────────────────
+async function analyzePhoto(imageBase64, zone, dogInfo, weekLabel) {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "x-api-key":import.meta.env.VITE_ANTHROPIC_KEY,
+      "anthropic-version":"2023-06-01",
+      "anthropic-dangerous-direct-browser-access":"true",
+    },
+    body:JSON.stringify({
+      model:"claude-sonnet-4-20250514",
+      max_tokens:1000,
+      messages:[{role:"user",content:[
+        {type:"image",source:{type:"base64",media_type:"image/jpeg",data:imageBase64}},
+        {type:"text",text:`You are a veterinary nutritionist AI specializing in canine skin and coat health.
+Analyze this dog photo of the ${zone.label} area.
+Dog: name=${dogInfo.name}, breed=${dogInfo.breed||"unknown"}, age=${dogInfo.age||"unknown"}, diet=${dogInfo.diet} (${dogInfo.dietBrand||"unspecified"}), on this diet for ${dogInfo.dietDuration||"unknown"}.
+This is their ${weekLabel} photo.
+IMPORTANT: Be as helpful as possible even if photo quality is imperfect. Only note quality issues if they genuinely prevent meaningful analysis. A slightly blurry or imperfect photo can still reveal coat shine, color, and visible skin conditions — analyze what you CAN see and note limitations briefly.
+Respond ONLY with valid JSON (no markdown):
+{"score":1-10,"observations":["obs1","obs2","obs3"],"dietSignals":"what this reveals about diet","recommendations":"specific dietary or care recommendation","trend":"improving/stable/declining/baseline","photoNote":"very brief note ONLY if quality meaningfully limited analysis, otherwise leave empty"}`}
+      ]}]
+    })
+  });
+  const data=await res.json();
+  const text=data.content?.map(i=>i.text||"").join("")||"";
+  return JSON.parse(text.replace(/```json|```/g,"").trim());
+}
+
 // ── Shared styles ─────────────────────────────────────────────────────────────
 const S = {
   page:{minHeight:"100vh",background:C.fog,fontFamily:"'DM Sans','Helvetica Neue',sans-serif",color:C.text},
-  header:{background:C.forest,padding:"12px 20px",display:"flex",alignItems:"center",justifyContent:"space-between"},
+  header:{background:C.forest,padding:"10px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",minHeight:"56px"},
   body:{maxWidth:"480px",margin:"0 auto",padding:"20px 16px 40px"},
   card:{background:C.white,borderRadius:"16px",padding:"20px",marginBottom:"12px",border:"1px solid rgba(60,92,83,0.1)"},
   cardForest:{background:C.forest,borderRadius:"16px",padding:"20px",marginBottom:"12px"},
-  label:{fontSize:"11px",fontWeight:"600",letterSpacing:"0.1em",textTransform:"uppercase",color:C.textLight,marginBottom:"6px"},
+  lbl:{fontSize:"11px",fontWeight:"600",letterSpacing:"0.1em",textTransform:"uppercase",color:C.textLight,marginBottom:"6px"},
   input:{width:"100%",padding:"11px 14px",borderRadius:"10px",border:"1.5px solid rgba(60,92,83,0.2)",fontSize:"15px",fontFamily:"'DM Sans',sans-serif",color:C.text,background:C.white,outline:"none",boxSizing:"border-box",marginBottom:"10px"},
-  btnPrimary:{width:"100%",padding:"14px",borderRadius:"12px",border:"none",background:C.forest,color:C.white,fontSize:"15px",fontWeight:"600",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",letterSpacing:"0.02em"},
-  btnSky:{width:"100%",padding:"13px",borderRadius:"12px",border:`1.5px solid ${C.sky}`,background:"transparent",color:C.sky,fontSize:"15px",fontWeight:"600",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",marginTop:"8px",display:"flex",alignItems:"center",justifyContent:"center",gap:"8px"},
+  btnPrimary:{width:"100%",padding:"14px",borderRadius:"12px",border:"none",background:C.forest,color:C.white,fontSize:"15px",fontWeight:"600",cursor:"pointer",fontFamily:"'DM Sans',sans-serif"},
+  btnSky:{width:"100%",padding:"13px",borderRadius:"12px",border:`1.5px solid ${C.sky}`,background:"transparent",color:C.sky,fontSize:"15px",fontWeight:"600",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",marginTop:"8px"},
 };
 
 // ── Header ────────────────────────────────────────────────────────────────────
 function Header({dogName,week}){
   return(
     <div style={S.header}>
-      <div style={{display:"flex",alignItems:"center",gap:"12px"}}>
-        <img src={LOGO} alt="NOBL" style={{height:"34px",width:"auto",objectFit:"contain"}}/>
-        <div style={{width:"1px",height:"30px",background:"rgba(255,255,255,0.2)"}}/>
+      <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
+        <img src={LOGO_SRC} alt="NOBL" style={{height:"38px",width:"auto",objectFit:"contain",display:"block"}}/>
+        <div style={{width:"1px",height:"32px",background:"rgba(255,255,255,0.25)"}}/>
         <div style={{fontSize:"11px",color:C.skyLight,letterSpacing:"0.12em",textTransform:"uppercase",fontWeight:"500"}}>Coat & Skin Tracker</div>
       </div>
       {dogName&&(
         <div style={{textAlign:"right"}}>
-          <div style={{color:C.skyLight,fontSize:"11px",letterSpacing:"0.06em"}}>TRACKING</div>
+          <div style={{color:C.skyLight,fontSize:"10px",letterSpacing:"0.06em"}}>TRACKING</div>
           <div style={{color:C.white,fontSize:"14px",fontWeight:"600"}}>{dogName}</div>
           {week!==undefined&&<div style={{color:C.skyLight,fontSize:"11px"}}>{WEEKS[week]}</div>}
         </div>
@@ -317,35 +394,62 @@ function Header({dogName,week}){
   );
 }
 
-// ── Photo Capture ─────────────────────────────────────────────────────────────
+// ── Photo Capture (one at a time, soft validation) ────────────────────────────
 function PhotoCapture({zones,onComplete}){
   const [idx,setIdx]=useState(0);
   const [photos,setPhotos]=useState({});
   const [previews,setPreviews]=useState({});
+  const [warnings,setWarnings]=useState([]);
+  const [checking,setChecking]=useState(false);
   const fileRef=useRef();
+
   const zone=zones[idx];
   const isLast=idx===zones.length-1;
   const has=!!photos[zone.id];
 
-  const handleFile=e=>{
+  const handleFile=async e=>{
     const file=e.target.files[0]; if(!file) return;
+    setChecking(true); setWarnings([]);
+    const {warnings:w}=await softValidatePhoto(file);
+    setChecking(false);
+    if(w.length>0){ setWarnings(w); return; } // show warnings, don't accept yet
+    acceptFile(file);
+  };
+
+  const acceptFile=file=>{
     const reader=new FileReader();
     reader.onload=()=>{
       setPhotos(p=>({...p,[zone.id]:reader.result.split(",")[1]}));
       setPreviews(p=>({...p,[zone.id]:URL.createObjectURL(file)}));
+      setWarnings([]);
     };
     reader.readAsDataURL(file);
   };
 
-  const next=()=>{ if(isLast) onComplete(photos); else setIdx(i=>i+1); };
+  // Allow user to force-accept despite warnings
+  const [pendingFile,setPendingFile]=useState(null);
+  const handleFileWithPending=async e=>{
+    const file=e.target.files[0]; if(!file) return;
+    setChecking(true); setWarnings([]);
+    const {warnings:w}=await softValidatePhoto(file);
+    setChecking(false);
+    if(w.length>0){ setWarnings(w); setPendingFile(file); }
+    else { acceptFile(file); setPendingFile(null); }
+  };
+
+  const forceAccept=()=>{ if(pendingFile){ acceptFile(pendingFile); setPendingFile(null); } };
+
+  const next=()=>{ if(isLast) onComplete(photos); else { setIdx(i=>i+1); setWarnings([]); setPendingFile(null); } };
   const retake=()=>{
     setPhotos(p=>{const n={...p};delete n[zone.id];return n;});
     setPreviews(p=>{const n={...p};delete n[zone.id];return n;});
+    setWarnings([]); setPendingFile(null);
     setTimeout(()=>fileRef.current?.click(),100);
   };
 
   return(
     <div>
+      {/* Progress */}
       <div style={{...S.card,padding:"16px 20px"}}>
         <div style={{display:"flex",justifyContent:"space-between",marginBottom:"10px"}}>
           <div style={{fontSize:"13px",fontWeight:"600",color:C.textMid}}>Photo {idx+1} of {zones.length}</div>
@@ -353,22 +457,61 @@ function PhotoCapture({zones,onComplete}){
         </div>
         <div style={{display:"flex",gap:"5px"}}>
           {zones.map((z,i)=>(
-            <div key={z.id} style={{flex:1,height:"5px",borderRadius:"3px",background:i<idx?C.forest:i===idx?C.sky:"rgba(60,92,83,0.12)",transition:"background 0.3s"}}/>
+            <div key={z.id} style={{flex:1,height:"5px",borderRadius:"3px",
+              background:i<idx?C.forest:i===idx?C.sky:"rgba(60,92,83,0.12)",transition:"background 0.3s"}}/>
           ))}
         </div>
       </div>
 
+      {/* Flash reminder */}
       <div style={{background:C.ember,borderRadius:"10px",padding:"10px 14px",display:"flex",alignItems:"center",gap:"10px",marginBottom:"12px"}}>
-        <span style={{fontSize:"16px"}}>⚡</span>
+        <span style={{fontSize:"16px",flexShrink:0}}>⚡</span>
         <div style={{fontSize:"13px",color:C.white,fontWeight:"600"}}>Enable flash on your camera before taking this photo</div>
       </div>
 
       <div style={S.card}>
+        {/* SVG guide */}
         <div style={{marginBottom:"14px"}}>{zone.svgGuide}</div>
-        <div style={{background:"rgba(114,170,185,0.1)",border:"1px solid rgba(114,170,185,0.25)",borderRadius:"10px",padding:"11px 14px",marginBottom:"14px",fontSize:"13px",color:C.text,lineHeight:"1.55"}}>
-          <span style={{fontWeight:"700",color:C.sky}}>Position guide — </span>{zone.tip}
+
+        {/* Position tip */}
+        <div style={{background:"rgba(114,170,185,0.1)",border:"1px solid rgba(114,170,185,0.25)",borderRadius:"10px",padding:"11px 14px",marginBottom:"12px",fontSize:"13px",color:C.text,lineHeight:"1.55"}}>
+          <span style={{fontWeight:"700",color:C.sky}}>How to take this photo — </span>{zone.tip}
         </div>
-        {has?(
+
+        {/* Checklist */}
+        <div style={{marginBottom:"14px"}}>
+          <div style={{fontSize:"11px",fontWeight:"600",color:C.textLight,letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:"6px"}}>Before you upload, confirm:</div>
+          {zone.checkTips.map((t,i)=>(
+            <div key={i} style={{display:"flex",gap:"8px",alignItems:"flex-start",marginBottom:"5px"}}>
+              <div style={{width:"16px",height:"16px",borderRadius:"4px",border:`1.5px solid rgba(60,92,83,0.3)`,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                <div style={{width:"8px",height:"8px",borderRadius:"2px",background:C.forest}}/>
+              </div>
+              <div style={{fontSize:"12px",color:C.textMid,lineHeight:"1.4"}}>{t}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Warnings from soft validation */}
+        {warnings.length>0&&(
+          <div style={{background:"rgba(204,102,51,0.08)",border:"1px solid rgba(204,102,51,0.3)",borderRadius:"10px",padding:"12px 14px",marginBottom:"12px"}}>
+            <div style={{fontWeight:"700",color:C.ember,fontSize:"13px",marginBottom:"6px"}}>Photo issue detected</div>
+            {warnings.map((w,i)=>(
+              <div key={i} style={{fontSize:"13px",color:"#9e4e26",marginBottom:"4px",lineHeight:"1.5"}}>• {w}</div>
+            ))}
+            <div style={{display:"flex",gap:"8px",marginTop:"10px"}}>
+              <button onClick={()=>fileRef.current?.click()} style={{...S.btnPrimary,flex:2,padding:"10px",fontSize:"13px"}}>Retake photo</button>
+              <button onClick={forceAccept} style={{...S.btnSky,flex:1,padding:"10px",fontSize:"12px",marginTop:"0"}}>Use anyway</button>
+            </div>
+          </div>
+        )}
+
+        {/* Checking spinner */}
+        {checking&&(
+          <div style={{textAlign:"center",padding:"16px",color:C.sky,fontSize:"13px",fontWeight:"600"}}>Checking photo...</div>
+        )}
+
+        {/* Preview */}
+        {has&&!checking&&(
           <div>
             <img src={previews[zone.id]} alt={zone.label} style={{width:"100%",borderRadius:"10px",maxHeight:"200px",objectFit:"cover",display:"block",marginBottom:"10px"}}/>
             <div style={{display:"flex",gap:"8px"}}>
@@ -376,19 +519,24 @@ function PhotoCapture({zones,onComplete}){
               <button onClick={next} style={{...S.btnPrimary,flex:2}}>{isLast?"Run Analysis →":`Next: ${zones[idx+1]?.shortLabel} →`}</button>
             </div>
           </div>
-        ):(
-          <div onClick={()=>fileRef.current?.click()} style={{border:"2px dashed rgba(60,92,83,0.25)",borderRadius:"12px",padding:"32px 20px",textAlign:"center",cursor:"pointer",background:"rgba(60,92,83,0.03)"}}>
-            <div style={{fontSize:"32px",marginBottom:"8px"}}>📷</div>
+        )}
+
+        {/* Upload tap area */}
+        {!has&&!checking&&warnings.length===0&&(
+          <div onClick={()=>fileRef.current?.click()} style={{border:"2px dashed rgba(60,92,83,0.25)",borderRadius:"12px",padding:"30px 20px",textAlign:"center",cursor:"pointer",background:"rgba(60,92,83,0.03)"}}>
+            <div style={{fontSize:"30px",marginBottom:"8px"}}>📷</div>
             <div style={{fontSize:"15px",fontWeight:"600",color:C.forest,marginBottom:"4px"}}>Tap to upload photo</div>
             <div style={{fontSize:"12px",color:C.textLight}}>From camera roll or take new</div>
           </div>
         )}
-        <input ref={fileRef} type="file" accept="image/*" capture="environment" style={{display:"none"}} onChange={handleFile}/>
+
+        <input ref={fileRef} type="file" accept="image/*" capture="environment" style={{display:"none"}} onChange={handleFileWithPending}/>
       </div>
 
+      {/* Thumbnail strip */}
       {Object.keys(previews).length>0&&(
         <div style={{...S.card,padding:"14px 16px"}}>
-          <div style={S.label}>Uploaded so far</div>
+          <div style={S.lbl}>Uploaded so far</div>
           <div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>
             {zones.slice(0,idx+1).map(z=>previews[z.id]&&(
               <div key={z.id} style={{position:"relative"}}>
@@ -403,9 +551,9 @@ function PhotoCapture({zones,onComplete}){
   );
 }
 
-// ── Score ring ────────────────────────────────────────────────────────────────
+// ── Score Ring ────────────────────────────────────────────────────────────────
 function ScoreRing({score,size=84,stroke=7}){
-  const r=size/2-stroke, circ=2*Math.PI*r, offset=circ-(score/10)*circ;
+  const r=size/2-stroke,circ=2*Math.PI*r,offset=circ-(score/10)*circ;
   const color=score>=8?C.sky:score>=6?C.forest:C.ember;
   return(
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
@@ -422,7 +570,7 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
   const [pdfLoading,setPdfLoading]=useState(false);
   const valid=results.filter(r=>r.score);
   const avg=valid.length?parseFloat((valid.reduce((a,b)=>a+(b.score||0),0)/valid.length).toFixed(1)):0;
-  const label=avg>=9?"Excellent":avg>=7.5?"Good":avg>=6?"Fair":"Needs Attention";
+  const lbl=avg>=9?"Excellent":avg>=7.5?"Good":avg>=6?"Fair":"Needs Attention";
 
   const handlePDF=async()=>{
     setPdfLoading(true);
@@ -436,7 +584,11 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
       {history.length>1&&(
         <div style={{display:"flex",gap:"6px",flexWrap:"wrap",marginBottom:"14px"}}>
           {history.sort((a,b)=>a.week-b.week).map(e=>(
-            <button key={e.week} onClick={()=>onSelectWeek(e.week)} style={{padding:"6px 14px",borderRadius:"20px",border:`1.5px solid ${e.week===currentWeek?C.forest:"rgba(60,92,83,0.2)"}`,background:e.week===currentWeek?C.forest:"transparent",color:e.week===currentWeek?C.white:C.textMid,fontSize:"13px",fontWeight:"600",cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>{e.weekLabel}</button>
+            <button key={e.week} onClick={()=>onSelectWeek(e.week)} style={{padding:"6px 14px",borderRadius:"20px",
+              border:`1.5px solid ${e.week===currentWeek?C.forest:"rgba(60,92,83,0.2)"}`,
+              background:e.week===currentWeek?C.forest:"transparent",
+              color:e.week===currentWeek?C.white:C.textMid,
+              fontSize:"13px",fontWeight:"600",cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>{e.weekLabel}</button>
           ))}
         </div>
       )}
@@ -451,7 +603,7 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
         </div>
         <div>
           <div style={{fontSize:"11px",color:C.skyLight,letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:"4px"}}>{weekLabel} · {dogInfo.name}</div>
-          <div style={{fontSize:"20px",fontFamily:"'DM Serif Display',Georgia,serif",color:C.white,marginBottom:"6px"}}>{label}</div>
+          <div style={{fontSize:"20px",fontFamily:"'DM Serif Display',Georgia,serif",color:C.white,marginBottom:"6px"}}>{lbl}</div>
           <div style={{display:"inline-block",background:"rgba(255,255,255,0.15)",borderRadius:"20px",padding:"3px 12px",fontSize:"12px",color:C.skyLight}}>
             {results[0]?.trend==="improving"?"↑ Improving":results[0]?.trend==="declining"?"↓ Declining":"◆ Baseline"}
           </div>
@@ -459,7 +611,7 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
       </div>
 
       <div style={S.card}>
-        <div style={S.label}>By area</div>
+        <div style={S.lbl}>By area</div>
         {results.map((r,i)=>{
           const zone=PHOTO_ZONES.find(z=>z.id===r.zoneId);
           const bc=r.score>=8?C.sky:r.score>=6?C.forest:C.ember;
@@ -479,7 +631,7 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
       </div>
 
       <div style={S.card}>
-        <div style={S.label}>Key findings</div>
+        <div style={S.lbl}>Key findings</div>
         {results.flatMap(r=>r.observations||[]).map((obs,i)=>(
           <div key={i} style={{display:"flex",gap:"10px",alignItems:"flex-start",marginBottom:"8px"}}>
             <div style={{width:"6px",height:"6px",borderRadius:"50%",background:C.sky,flexShrink:0,marginTop:"6px"}}/>
@@ -489,21 +641,22 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
       </div>
 
       <div style={{...S.card,background:"rgba(114,170,185,0.1)",border:"1px solid rgba(114,170,185,0.25)"}}>
-        <div style={{...S.label,color:C.skyDark}}>Diet signal</div>
+        <div style={{...S.lbl,color:C.skyDark}}>Diet signal</div>
         <div style={{fontSize:"14px",color:C.text,lineHeight:"1.6"}}>{results.find(r=>r.dietSignals)?.dietSignals||"—"}</div>
       </div>
 
       <div style={S.cardForest}>
-        <div style={{...S.label,color:C.skyLight}}>Recommendations</div>
+        <div style={{...S.lbl,color:C.skyLight}}>Recommendations</div>
         <div style={{fontSize:"14px",color:C.fog,lineHeight:"1.6"}}>{results.map(r=>r.recommendations).filter(Boolean).join(" ")}</div>
       </div>
 
-      <button onClick={handlePDF} disabled={pdfLoading} style={S.btnSky}>
+      <button onClick={handlePDF} disabled={pdfLoading} style={{...S.btnSky,display:"flex",alignItems:"center",justifyContent:"center",gap:"8px"}}>
         {pdfLoading?"Generating PDF…":"⬇  Download PDF Report"}
       </button>
 
-      <div style={{fontSize:"12px",color:C.textLight,lineHeight:"1.6",padding:"10px 4px"}}>
-        ⚕ AI-assisted screening only. Does not replace professional veterinary diagnosis. Consult your vet for any health concerns.
+      <div style={{fontSize:"12px",color:C.textLight,lineHeight:"1.6",padding:"10px 4px",textAlign:"center"}}>
+        ⚕ AI-assisted screening only. Not a substitute for veterinary diagnosis.<br/>
+        <a href="https://NOBLFoods.com" style={{color:C.sky,textDecoration:"none"}}>NOBLFoods.com</a>
       </div>
 
       {currentWeek<6&&(
@@ -513,35 +666,6 @@ function AnalysisResults({results,weekLabel,dogInfo,history,currentWeek,onSelect
       )}
     </div>
   );
-}
-
-// ── API ───────────────────────────────────────────────────────────────────────
-async function analyzePhoto(imageBase64,zone,dogInfo,weekLabel){
-  const res=await fetch("https://api.anthropic.com/v1/messages",{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "x-api-key":import.meta.env.VITE_ANTHROPIC_KEY,
-      "anthropic-version":"2023-06-01",
-      "anthropic-dangerous-direct-browser-access":"true",
-    },
-    body:JSON.stringify({
-      model:"claude-sonnet-4-20250514",
-      max_tokens:1000,
-      messages:[{role:"user",content:[
-        {type:"image",source:{type:"base64",media_type:"image/jpeg",data:imageBase64}},
-        {type:"text",text:`You are a veterinary nutritionist AI specializing in canine skin and coat health.
-Analyze this dog photo of the ${zone.label} area.
-Dog info: name=${dogInfo.name}, breed=${dogInfo.breed||"unknown"}, age=${dogInfo.age||"unknown"}, diet=${dogInfo.diet} (${dogInfo.dietBrand||"unspecified brand"}), on this diet for ${dogInfo.dietDuration||"unknown duration"}.
-This is their ${weekLabel} photo. Do your best even if quality is imperfect — note limitations but still provide useful analysis.
-Respond ONLY with valid JSON (no markdown):
-{"score":1-10,"observations":["obs1","obs2","obs3"],"dietSignals":"what this reveals about diet","recommendations":"specific dietary or care recommendation","trend":"improving/stable/declining/baseline","photoNote":"brief note if quality limited analysis, else empty string"}`}
-      ]}]
-    })
-  });
-  const data=await res.json();
-  const text=data.content?.map(i=>i.text||"").join("")||"";
-  return JSON.parse(text.replace(/```json|```/g,"").trim());
 }
 
 // ── Main App ──────────────────────────────────────────────────────────────────
@@ -592,45 +716,44 @@ export default function NoblDogTracker(){
               <div style={{fontFamily:"'DM Serif Display',Georgia,serif",fontSize:"22px",color:C.forest,marginBottom:"6px"}}>Track your dog's skin & coat health</div>
               <div style={{fontSize:"14px",color:C.textMid,lineHeight:"1.6",marginBottom:"20px"}}>Upload baseline photos today, then check in weekly for 5–6 weeks. NOBL's AI tracks changes and shows how your dog's diet is — or isn't — working.</div>
 
-              <div style={S.label}>Dog's name *</div>
+              <div style={S.lbl}>Dog's name *</div>
               <input style={S.input} placeholder="e.g. Buddy" value={dogInfo.name} onChange={e=>upd("name",e.target.value)}/>
-
-              <div style={S.label}>Breed</div>
+              <div style={S.lbl}>Breed</div>
               <select style={{...S.input,background:C.white}} value={dogInfo.breed} onChange={e=>upd("breed",e.target.value)}>
                 <option value="">Select breed...</option>
                 {DOG_BREEDS.map(b=><option key={b} value={b}>{b}</option>)}
               </select>
-
-              <div style={S.label}>Age</div>
+              <div style={S.lbl}>Age</div>
               <input style={S.input} placeholder="e.g. 4 years" value={dogInfo.age} onChange={e=>upd("age",e.target.value)}/>
-
-              <div style={S.label}>Your email address *</div>
+              <div style={S.lbl}>Your email address *</div>
               <input style={S.input} type="email" placeholder="you@example.com" value={dogInfo.email} onChange={e=>upd("email",e.target.value)}/>
               <div style={{fontSize:"11px",color:C.textLight,marginTop:"-6px",marginBottom:"12px"}}>For weekly reminders and your report summary</div>
-
-              <div style={S.label}>Current diet type *</div>
+              <div style={S.lbl}>Current diet type *</div>
               <select style={{...S.input,background:C.white}} value={dogInfo.diet} onChange={e=>upd("diet",e.target.value)}>
                 <option value="">Select diet type...</option>
                 {DIET_OPTIONS.map(o=><option key={o} value={o}>{o}</option>)}
               </select>
-
-              <div style={S.label}>Food brand</div>
+              <div style={S.lbl}>Food brand</div>
               <input style={S.input} placeholder="e.g. Royal Canin, Orijen" value={dogInfo.dietBrand} onChange={e=>upd("dietBrand",e.target.value)}/>
-
-              <div style={S.label}>How long on this diet?</div>
+              <div style={S.lbl}>How long on this diet?</div>
               <input style={S.input} placeholder="e.g. 6 weeks" value={dogInfo.dietDuration} onChange={e=>upd("dietDuration",e.target.value)}/>
-
               <div style={{fontSize:"11px",color:C.textLight,marginBottom:"12px"}}>* Required fields</div>
-              <button style={{...S.btnPrimary,opacity:canStart?1:0.4}} disabled={!canStart} onClick={()=>setStep("photos")}>Begin Baseline Photos →</button>
+              <button style={{...S.btnPrimary,opacity:canStart?1:0.4}} disabled={!canStart} onClick={()=>setStep("photos")}>
+                Begin Baseline Photos →
+              </button>
             </div>
 
             <div style={S.card}>
-              <div style={S.label}>5 areas we monitor</div>
+              <div style={S.lbl}>5 areas we monitor</div>
               <div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>
                 {PHOTO_ZONES.map(z=>(
                   <div key={z.id} style={{background:"rgba(60,92,83,0.07)",borderRadius:"8px",padding:"6px 12px",fontSize:"13px",color:C.forest,fontWeight:"500"}}>{z.shortLabel}</div>
                 ))}
               </div>
+            </div>
+
+            <div style={{textAlign:"center",padding:"8px 0",fontSize:"12px",color:C.textLight}}>
+              <a href="https://NOBLFoods.com" style={{color:C.sky,textDecoration:"none"}}>NOBLFoods.com</a>
             </div>
           </div>
         )}
