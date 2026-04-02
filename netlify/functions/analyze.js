@@ -1,6 +1,3 @@
-// netlify/functions/analyze.js
-// Proxies Anthropic API calls securely — API key never sent to browser
-
 exports.handler = async (event) => {
   const headers = {
     "Access-Control-Allow-Origin": "*",
@@ -54,7 +51,7 @@ Rules: score = integer 1-10. trend = one of: improving, stable, declining, basel
     if (!apiRes.ok) {
       const errText = await apiRes.text();
       console.error("Anthropic error:", apiRes.status, errText);
-      return { statusCode: 502, headers, body: JSON.stringify({ error: `API error ${apiRes.status}` }) };
+      return { statusCode: 502, headers, body: JSON.stringify({ error: `API error ${apiRes.status}`, detail: errText }) };
     }
 
     const data = await apiRes.json();
