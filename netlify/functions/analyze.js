@@ -16,9 +16,21 @@ exports.handler = async (event) => {
       return { statusCode: 400, headers, body: JSON.stringify({ error: "Missing required fields" }) };
     }
 
+    // Auto-detect image format from base64 signature
+    function detectMediaType(b64) {
+      const head = b64.substring(0, 16);
+      if (head.startsWith("/9j/")) return "image/jpeg";
+      if (head.startsWith("iVBORw0KGgo")) return "image/png";
+      if (head.startsWith("R0lGOD")) return "image/gif";
+      if (head.startsWith("UklGR")) return "image/webp";
+      return "image/jpeg";
+    }
+
+    const mediaType = detectMediaType(imageBase64);
+
     const prompt = `You are a veterinary nutritionist AI specializing in canine skin and coat health.
 Analyze this dog photo of the ${zoneLabel} area.
-Dog: name=${dogInfo.name||"unknown"}, breed=${dogInfo.breed||"unknown"}, age=${dogInfo.age||"unknown"}, diet=${dogInfo.diet||"unknown"} (${dogInfo.dietBrand||"unspecified"}), on this diet for ${dogInfo.dietDuration||"unknown"}.
+Dog: name=${dogInfo.name || "unknown"}, breed=${dogInfo.breed || "unknown"}, age=${dogInfo.age || "unknown"}, diet=${dogInfo.diet || "unknown"} (${dogInfo.dietBrand || "unspecified"}), on this diet for ${dogInfo.dietDuration || "unknown"}.
 This is their ${weekLabel} photo.
 
 Be helpful even if photo quality is imperfect. Analyze what you CAN see. Only note a photoNote if quality truly prevents any meaningful assessment.
@@ -41,7 +53,14 @@ Rules: score = integer 1-10. trend = one of: improving, stable, declining, basel
         messages: [{
           role: "user",
           content: [
-            { type: "image", source: { type: "base64", media_type: "image/jpeg", data: imageBase64 } },
+            {
+              type: "image",
+              source: {
+                type: "base64",
+                media_type: mediaType,
+                data: imageBase64,
+              }
+            },
             { type: "text", text: prompt }
           ]
         }]
@@ -58,8 +77,9 @@ Rules: score = integer 1-10. trend = one of: improving, stable, declining, basel
     const rawText = (data.content || []).map(c => c.text || "").join("").replace(/```json|```/gi, "").trim();
 
     let parsed;
-    try { parsed = JSON.parse(rawText); }
-    catch (e) {
+    try {
+      parsed = JSON.parse(rawText);
+    } catch (e) {
       console.error("Parse error:", e, "Raw:", rawText);
       return { statusCode: 502, headers, body: JSON.stringify({ error: "Invalid JSON from AI", raw: rawText }) };
     }
