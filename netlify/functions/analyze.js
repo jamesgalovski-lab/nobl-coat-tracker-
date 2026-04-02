@@ -33,17 +33,13 @@ exports.handler = async (event) => {
 
 Look at this photo and determine if it is usable for analyzing a dog's ${zoneLabel}.
 
-Evaluate these things:
+Evaluate:
 1. Is a dog (or part of a dog) clearly visible?
 2. Does the photo show the correct body area: ${zoneLabel}?
 3. Is there enough light to make out coat texture and skin color?
 4. Is it in focus enough to see surface detail?
 
-Important: Be LENIENT. A slightly dark, slightly blurry, or imperfectly framed photo is still usable. 
-Only mark as not usable if the photo genuinely cannot be analyzed at all.
-
-If not usable, explain the problem in plain, friendly language a pet owner would understand — no jargon.
-Give one specific, actionable tip to fix it.
+Be LENIENT. Only mark unusable if it genuinely cannot be analyzed at all.
 
 Respond ONLY with valid JSON, no markdown:
 {"usable": true, "issue": "", "suggestion": ""}
@@ -60,7 +56,7 @@ If not usable: issue = what is wrong (friendly, 1 sentence), suggestion = exactl
         },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
-          max_tokens: 250,
+          max_tokens: 200,
           messages: [{
             role: "user",
             content: [
@@ -89,8 +85,7 @@ If not usable: issue = what is wrong (friendly, 1 sentence), suggestion = exactl
       const valData = await valRes.json();
       const valText = (valData.content || []).map(c => c.text || "").join("").replace(/```json|```/gi, "").trim();
       try {
-        const parsed = JSON.parse(valText);
-        return { statusCode: 200, headers, body: JSON.stringify(parsed) };
+        return { statusCode: 200, headers, body: JSON.stringify(JSON.parse(valText)) };
       } catch(e) {
         return { statusCode: 200, headers, body: JSON.stringify({ usable: true, issue: "", suggestion: "" }) };
       }
@@ -104,45 +99,59 @@ If not usable: issue = what is wrong (friendly, 1 sentence), suggestion = exactl
     const dietBrand = dogInfo.dietBrand || "unspecified brand";
     const dietDuration = dogInfo.dietDuration || "unknown duration";
 
-    const prompt = `You are a friendly veterinary nutrition expert analyzing a dog photo for a consumer health app called NOBL Coat & Skin Tracker.
+    const prompt = `You are a friendly veterinary nutrition expert analyzing a dog photo for NOBL Coat & Skin Tracker.
 
-Dog info: name=${dogName}, breed=${breed}, age=${age}, diet type=${diet}, brand=${dietBrand}, on this diet for ${dietDuration}.
+Dog: name=${dogName}, breed=${breed}, age=${age}, diet=${diet}, brand=${dietBrand}, on diet for ${dietDuration}.
 Photo area: ${zoneLabel}
 Assessment: ${weekLabel}
 
-WHAT TO LOOK FOR in this photo:
+WHAT TO LOOK FOR:
 - Coat shine, luster, texture, density
-- Skin color (pink=healthy, red=irritated, grey/dark=concerning)
-- Visible flaking, scaling, or dryness
-- Hair distribution — any thinning, bald patches, or matting
-- Signs of irritation, moisture, or inflammation
+- Skin color (pink=healthy, red/grey=concerning)
+- Flaking, scaling, dryness
+- Hair distribution — thinning, bald patches, matting
+- Signs of irritation or inflammation
 
-WRITING RULES — follow these exactly:
-- Write like a knowledgeable friend, not a scientist. Warm, clear, and encouraging.
-- observations: 3-5 specific things you actually see in THIS photo. Concrete and specific to this area.
-- dietSignals: What nutritional picture does this suggest? Focus on specific nutrients (omega-3 fatty acids, omega-6/linoleic acid, zinc, vitamin E, biotin, protein quality). NO food format mentions (no "kibble", "wet food", "raw", "freeze-dried"). Be specific but conversational.
-- recommendations: Bullet points separated by "|". Each bullet must be:
-  * Specific and actionable — not "add omega-3s" but WHY and WHAT LEVEL
-  * Conversational — explain what the nutrient does in plain English
-  * Include practical guidance levels where relevant (e.g. "look for foods with at least 2-3% omega-6 on the label")
-  * Include specific care actions (brushing, ear cleaning, nail checks, hydration)
-  * Do NOT repeat any point already made in a previous bullet
-  * The LAST bullet must always be exactly: "For personalized help picking a NOBL product that supports ${dogName}'s skin and coat, reach out to us at customerservice@NOBLFoods.com — we'd love to help!"
+WRITING RULES:
+- Warm, friendly tone like a knowledgeable friend — not clinical
+- observations: 3-5 specific things you actually see in THIS photo about THIS area only
+- dietSignals: conversational paragraph about what the coat/skin reveals nutritionally. Focus on specific nutrients (omega-3 EPA/DHA, omega-6 linoleic acid, zinc, vitamin E, biotin, protein). NO food format mentions (no "kibble", "wet food", "raw", "freeze-dried").
+- photoNote: ONLY if quality genuinely prevented meaningful analysis. Specific about what couldn't be assessed. Empty string if photo was fine.
+- trend: "baseline" for first submission, otherwise "improving"/"stable"/"declining"
 
-NUTRIENT CONTEXT (use this knowledge to inform recommendations but write conversationally):
-- Omega-6 (linoleic acid): critical for skin barrier and water retention. Look for 2-4% DM on food label.
-- Omega-3 (EPA+DHA from marine sources): reduces inflammation, improves coat shine. Therapeutic dose: ~50-220mg EPA per kg body weight daily (Watson, J Nutrition 1998; Marchegiani et al., PMC 2020).
-- Zinc: most commonly deficient trace mineral for skin. Essential for hair follicle health and keratinization. Look for 150-250mg/kg DM in food, preferably as zinc methionine for better absorption (Pereira et al., PMC 2021).
-- Vitamin E: protects skin cell membranes, works best paired with fatty acid supplementation.
-- Protein/amino acids: skin and coat are high-turnover tissues. Methionine and cysteine are especially important for coat keratin.
-- Biotin and B vitamins: support keratin production and skin cell metabolism.
+FOR RECOMMENDATIONS — use this EXACT categorical JSON structure.
+Each category is a NUTRIENT ACTION with: a clear "do this" header, ONE consistent dosing target, and the areas/effects it addresses.
+Use ONLY these categories (include only the ones relevant to what you actually observed):
 
-- photoNote: ONLY include if the photo quality genuinely prevented you from seeing something important. Be specific about what you couldn't assess and why. If the photo was fine, leave this as an empty string.
-- trend: "baseline" for first submission, otherwise "improving", "stable", or "declining"
-- score: 1-10 where 10 = perfect healthy coat/skin, 1 = severe issues
+IMPORTANT DOSING RULES — pick ONE range and use it consistently:
+- Omega-3 (EPA+DHA): "aim for 50–100mg of EPA per kg of body weight daily (from a marine source like fish oil)" — do NOT give a second range
+- Omega-6 (linoleic acid): "look for 2–4% on the typical nutrient analysis — ask the manufacturer if it's not listed on the label" — NOT "guaranteed analysis"
+- Zinc: "look for 150–250mg/kg in the food, ideally as zinc methionine which absorbs better than zinc oxide"
+- Vitamin E: "ensure the food provides vitamin E — it works best when paired with fatty acid supplementation"
+- Protein: "look for highly digestible protein sources, ideally ≥25% on the typical nutrient analysis"
 
-Respond ONLY with valid JSON, no markdown, no extra text:
-{"score":7,"observations":["specific finding 1","specific finding 2","specific finding 3"],"dietSignals":"conversational nutritional insight","recommendations":"bullet 1|bullet 2|bullet 3|closing bullet","trend":"baseline","photoNote":""}`;
+The recommendations field must be a JSON string of this structure:
+[
+  {
+    "header": "Add Omega-3 Fatty Acids (EPA + DHA)",
+    "dose": "Aim for 50–100mg of EPA per kg of body weight daily from a marine source like fish oil",
+    "effects": ["Reduces coat dullness and improves shine", "Supports skin barrier to reduce dryness"]
+  },
+  {
+    "header": "Increase Omega-6 (Linoleic Acid)",
+    "dose": "Look for 2–4% on the typical nutrient analysis — ask the manufacturer if it's not listed on the label",
+    "effects": ["Strengthens the skin's moisture barrier", "Keeps coat soft and reduces coarseness"]
+  }
+]
+
+Include only categories supported by what you actually observed. Max 5 categories total (not counting the closing NOBL item).
+Always add this as the FINAL item in the array:
+{"header": "Get Personalized NOBL Nutrition Guidance", "dose": "", "effects": ["Reach out to us at customerservice@NOBLFoods.com — we'd love to help find the right NOBL product for ${dogName}!"]}
+
+Respond ONLY with valid JSON, no markdown:
+{"score":7,"observations":["finding 1","finding 2","finding 3"],"dietSignals":"conversational paragraph","recommendations":"[{...}]","trend":"baseline","photoNote":""}
+
+The recommendations field value must be a valid JSON array encoded as a string.`;
 
     const apiRes = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -153,7 +162,7 @@ Respond ONLY with valid JSON, no markdown, no extra text:
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 1200,
+        max_tokens: 1400,
         messages: [{
           role: "user",
           content: [
@@ -171,12 +180,9 @@ Respond ONLY with valid JSON, no markdown, no extra text:
         return {
           statusCode: 200, headers,
           body: JSON.stringify({
-            score: 0,
-            observations: [],
-            dietSignals: "",
-            recommendations: "",
+            score: 0, observations: [], dietSignals: "", recommendations: "[]",
             trend: "baseline",
-            photoNote: "This photo could not be processed — it may be in HEIC format (common on iPhones). To fix this: go to iPhone Settings → Camera → Formats → Most Compatible, then retake the photo."
+            photoNote: "This photo could not be processed. If you're using an iPhone, go to Settings → Camera → Formats → Most Compatible, then retake the photo as JPEG."
           })
         };
       }
@@ -192,6 +198,14 @@ Respond ONLY with valid JSON, no markdown, no extra text:
     } catch (e) {
       console.error("Parse error:", rawText);
       return { statusCode: 502, headers, body: JSON.stringify({ error: "Invalid JSON from AI", raw: rawText }) };
+    }
+
+    // Ensure recommendations is a parseable array string
+    if (typeof parsed.recommendations === "object") {
+      parsed.recommendations = JSON.stringify(parsed.recommendations);
+    }
+    if (!parsed.recommendations || parsed.recommendations === "") {
+      parsed.recommendations = "[]";
     }
 
     return { statusCode: 200, headers, body: JSON.stringify(parsed) };
