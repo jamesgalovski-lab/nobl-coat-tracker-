@@ -61,16 +61,32 @@ const PHOTO_ZONES = [
       <text x="80" y="96" textAnchor="middle" fontSize="8" fill="#4a6660" fontFamily="sans-serif">dog on back · belly up</text>
     </svg>),
   },
-  { id:"ears", label:"Ears (Both Sides)", shortLabel:"Ears",
-    tip:"Fold one ear back to show the inner flap. Hold phone 8–10 inches away.",
-    checks:["Ear folded back, inner flap visible","8–10 inches from ear","Flash enabled"],
+  { id:"ear_left", label:"Left Ear (Inner Flap)", shortLabel:"Left Ear",
+    tip:"Gently fold the LEFT ear back to expose the inner skin. Hold phone 8–10 inches away. Flash ON. The inner flap and canal should fill most of the frame.",
+    checks:["Left ear folded back, inner flap clearly visible","8–10 inches from the ear","Flash enabled"],
     svgGuide:(<svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
       <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
-      <ellipse cx="80" cy="55" rx="44" ry="36" fill="#c9a48e"/><ellipse cx="80" cy="58" rx="30" ry="24" fill="#e8b090"/>
-      <ellipse cx="80" cy="60" rx="18" ry="14" fill="#d49070"/>
-      <path d="M36 30 Q80 10 124 30" stroke="#72AAB9" strokeWidth="2" fill="none" strokeDasharray="4 3"/>
-      <text x="80" y="18" textAnchor="middle" fontSize="8" fill="#4d8ea0" fontFamily="sans-serif">fold ear back</text>
-      <text x="80" y="96" textAnchor="middle" fontSize="8" fill="#4a6660" fontFamily="sans-serif">inner flap visible · 8–10 in</text>
+      <ellipse cx="80" cy="54" rx="32" ry="30" fill="#c9a48e"/>
+      <ellipse cx="44" cy="44" rx="18" ry="26" fill="#b5907a" opacity="0.4"/>
+      <ellipse cx="44" cy="46" rx="12" ry="18" fill="#e8b090"/>
+      <ellipse cx="44" cy="48" rx="7" ry="11" fill="#d49070"/>
+      <ellipse cx="116" cy="44" rx="18" ry="26" fill="#c9a48e" opacity="0.3"/>
+      <text x="44" y="18" textAnchor="middle" fontSize="9" fill="#4d8ea0" fontFamily="sans-serif" fontWeight="bold">LEFT</text>
+      <text x="80" y="96" textAnchor="middle" fontSize="8" fill="#4a6660" fontFamily="sans-serif">fold LEFT ear back · inner flap visible · flash on</text>
+    </svg>),
+  },
+  { id:"ear_right", label:"Right Ear (Inner Flap)", shortLabel:"Right Ear",
+    tip:"Now fold the RIGHT ear back to expose the inner skin. Hold phone 8–10 inches away. Flash ON. The inner flap and canal should fill most of the frame.",
+    checks:["Right ear folded back, inner flap clearly visible","8–10 inches from the ear","Flash enabled"],
+    svgGuide:(<svg viewBox="0 0 160 100" width="100%" style={{borderRadius:"8px",display:"block"}}>
+      <rect width="160" height="100" fill="#e8f0ee" rx="8"/>
+      <ellipse cx="80" cy="54" rx="32" ry="30" fill="#c9a48e"/>
+      <ellipse cx="44" cy="44" rx="18" ry="26" fill="#c9a48e" opacity="0.3"/>
+      <ellipse cx="116" cy="44" rx="18" ry="26" fill="#b5907a" opacity="0.4"/>
+      <ellipse cx="116" cy="46" rx="12" ry="18" fill="#e8b090"/>
+      <ellipse cx="116" cy="48" rx="7" ry="11" fill="#d49070"/>
+      <text x="116" y="18" textAnchor="middle" fontSize="9" fill="#4d8ea0" fontFamily="sans-serif" fontWeight="bold">RIGHT</text>
+      <text x="80" y="96" textAnchor="middle" fontSize="8" fill="#4a6660" fontFamily="sans-serif">fold RIGHT ear back · inner flap visible · flash on</text>
     </svg>),
   },
   { id:"paws", label:"Paws & Between Toes", shortLabel:"Paws",
@@ -204,37 +220,66 @@ async function generatePDF(dogInfo, results, consolidated, weekLabel) {
 
   // Zone bars
   doc.setFontSize(8); doc.setFont("helvetica","bold"); doc.setTextColor(60,92,83); doc.text("RESULTS BY AREA",m,y); y+=7;
-  results.forEach(r=>{
-    const zone=PHOTO_ZONES.find(z=>z.id===r.zoneId); const s2=r.score||0;
+  buildDisplayRows(results).forEach(row=>{
+    const s2=row.score||0;
     const bc=s2>=8?[114,170,185]:s2>=6?[60,92,83]:[204,102,51]; const bw=W-m*2-36;
-    doc.setFontSize(9); doc.setFont("helvetica","normal"); doc.setTextColor(74,102,96); doc.text(zone?.shortLabel||"",m,y+4);
+    const label=row.type==="ears_group"?"Ears":(PHOTO_ZONES.find(z=>z.id===row.zoneId)?.shortLabel||"");
+    doc.setFontSize(9); doc.setFont("helvetica","normal"); doc.setTextColor(74,102,96); doc.text(label,m,y+4);
     if(s2>0){
       doc.setFillColor(220,228,226); doc.roundedRect(m+20,y-1,bw,6,1,1,"F");
       doc.setFillColor(...bc); doc.roundedRect(m+20,y-1,bw*s2/10,6,1,1,"F");
       doc.setFont("helvetica","bold"); doc.setTextColor(...bc); doc.text(String(s2),W-m,y+4,{align:"right"});
+      if(row.type==="ears_group"){
+        y+=10;
+        doc.setFontSize(7.5); doc.setFont("helvetica","normal"); doc.setTextColor(122,153,144);
+        doc.text(`L: ${row.leftScore>0?row.leftScore+"/10":"not analyzed"}   R: ${row.rightScore>0?row.rightScore+"/10":"not analyzed"}`,m+20,y);
+      }
     } else { doc.setTextColor(122,153,144); doc.setFont("helvetica","italic"); doc.text("Not analyzed",m+20,y+4); }
     y+=10;
-    if(r.photoNote?.trim()){doc.setFontSize(7.5);doc.setFont("helvetica","italic");doc.setTextColor(122,153,144);const nl=doc.splitTextToSize("i  "+r.photoNote,bw+16);doc.text(nl,m+20,y);y+=nl.length*5;}
+    const note=row.type==="ears_group"?[row.leftNote,row.rightNote].filter(Boolean).join(" · "):row.photoNote;
+    if(note?.trim()){doc.setFontSize(7.5);doc.setFont("helvetica","italic");doc.setTextColor(122,153,144);const nl=doc.splitTextToSize("i  "+note,bw+16);doc.text(nl,m+20,y);y+=nl.length*5;}
   });
   y+=4;
 
   // Per-zone findings
   doc.setFillColor(60,92,83); doc.rect(m,y,W-m*2,7,"F");
   doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont("helvetica","bold"); doc.text("KEY FINDINGS BY AREA",m+4,y+5); y+=12;
-  results.forEach(r=>{
-    const zone=PHOTO_ZONES.find(z=>z.id===r.zoneId);
+  buildDisplayRows(results).forEach(row=>{
     if(y>H-60){doc.addPage();y=m;}
-    doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.setTextColor(60,92,83); doc.text(zone?.label||"",m,y); y+=5;
-    if(!r.score||r.score===0){
-      doc.setFont("helvetica","italic"); doc.setTextColor(122,153,144);
-      const nl=doc.splitTextToSize("  "+(r.photoNote||"Photo could not be analyzed."),W-m*2-4); doc.text(nl,m+2,y); y+=nl.length*5+4;
+    if(row.type==="ears_group"){
+      doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.setTextColor(60,92,83); doc.text("Ears (Left & Right)",m,y); y+=5;
+      ["Left","Right"].forEach(side=>{
+        const obs=side==="Left"?row.leftObs:row.rightObs;
+        const score=side==="Left"?row.leftScore:row.rightScore;
+        const note=side==="Left"?row.leftNote:row.rightNote;
+        doc.setFontSize(8.5); doc.setFont("helvetica","bold"); doc.setTextColor(77,142,160); doc.text(side+" Ear",m+4,y); y+=5;
+        if(score>0){
+          obs.forEach(ob=>{
+            doc.setFillColor(114,170,185); doc.circle(m+6,y+1,1.2,"F");
+            doc.setFont("helvetica","normal"); doc.setTextColor(74,102,96);
+            const lines=doc.splitTextToSize(ob,W-m*2-12); doc.text(lines,m+10,y+2); y+=lines.length*5+2;
+            if(y>H-60){doc.addPage();y=m;}
+          });
+        } else {
+          doc.setFont("helvetica","italic"); doc.setTextColor(122,153,144);
+          const nl=doc.splitTextToSize("  "+(note||"Photo could not be analyzed."),W-m*2-8); doc.text(nl,m+6,y); y+=nl.length*5+2;
+        }
+      });
+      y+=2;
     } else {
-      (r.observations||[]).forEach(obs=>{
-        doc.setFillColor(114,170,185); doc.circle(m+2,y+1,1.2,"F");
-        doc.setFont("helvetica","normal"); doc.setTextColor(74,102,96);
-        const lines=doc.splitTextToSize(obs,W-m*2-8); doc.text(lines,m+6,y+2); y+=lines.length*5+2;
-        if(y>H-60){doc.addPage();y=m;}
-      }); y+=2;
+      const zone=PHOTO_ZONES.find(z=>z.id===row.zoneId);
+      doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.setTextColor(60,92,83); doc.text(zone?.label||"",m,y); y+=5;
+      if(!row.score||row.score===0){
+        doc.setFont("helvetica","italic"); doc.setTextColor(122,153,144);
+        const nl=doc.splitTextToSize("  "+(row.photoNote||"Photo could not be analyzed."),W-m*2-4); doc.text(nl,m+2,y); y+=nl.length*5+4;
+      } else {
+        (row.observations||[]).forEach(obs=>{
+          doc.setFillColor(114,170,185); doc.circle(m+2,y+1,1.2,"F");
+          doc.setFont("helvetica","normal"); doc.setTextColor(74,102,96);
+          const lines=doc.splitTextToSize(obs,W-m*2-8); doc.text(lines,m+6,y+2); y+=lines.length*5+2;
+          if(y>H-60){doc.addPage();y=m;}
+        }); y+=2;
+      }
     }
   });
 
@@ -469,6 +514,38 @@ function ScoreRing({score,size=84,stroke=7}){
   </svg>);
 }
 
+
+// ── Group ear results for display (left + right → one Ears row) ──────────────
+function buildDisplayRows(results) {
+  const rows = [];
+  let earDone = false;
+  results.forEach(r => {
+    if (r.zoneId === "ear_left" || r.zoneId === "ear_right") {
+      if (!earDone) {
+        const left  = results.find(x => x.zoneId === "ear_left");
+        const right = results.find(x => x.zoneId === "ear_right");
+        const scores = [left?.score, right?.score].filter(s => s > 0);
+        const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length*10)/10 : 0;
+        rows.push({
+          type: "ears_group",
+          shortLabel: "Ears",
+          score: avg,
+          leftScore:  left?.score  || 0,
+          rightScore: right?.score || 0,
+          leftNote:   left?.photoNote  || "",
+          rightNote:  right?.photoNote || "",
+          leftObs:    left?.observations  || [],
+          rightObs:   right?.observations || [],
+        });
+        earDone = true;
+      }
+    } else {
+      rows.push({ type: "zone", ...r });
+    }
+  });
+  return rows;
+}
+
 function AnalysisResults({results,consolidated,weekLabel,dogInfo,history,currentWeek,onSelectWeek,onNextWeek}){
   const [pdfLoading,setPdfLoading]=useState(false);
   const valid=results.filter(r=>r.score>0);
@@ -507,41 +584,102 @@ function AnalysisResults({results,consolidated,weekLabel,dogInfo,history,current
       </div>
     </div>
 
-    {/* Zone scores */}
+    {/* Zone scores — ears collapsed into one row */}
     <div style={S.card}>
       <div style={S.lbl}>By area</div>
-      {results.map((r,i)=>{
-        const zone=PHOTO_ZONES.find(z=>z.id===r.zoneId); const bc=r.score>=8?C.sky:r.score>=6?C.forest:C.ember;
-        return(<div key={i} style={{marginBottom:"10px"}}>
+      {buildDisplayRows(results).map((row,i)=>{
+        const bc = row.score>=8?C.sky:row.score>=6?C.forest:C.ember;
+        if(row.type==="ears_group"){
+          return(<div key="ears" style={{marginBottom:"10px"}}>
+            <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
+              <div style={{fontSize:"12px",color:C.textMid,width:"68px",flexShrink:0}}>Ears</div>
+              {row.score>0?(<>
+                <div style={{flex:1,height:"6px",borderRadius:"3px",background:"rgba(60,92,83,0.1)",overflow:"hidden"}}>
+                  <div style={{height:"100%",width:`${row.score*10}%`,background:bc,borderRadius:"3px",transition:"width 0.8s ease"}}/>
+                </div>
+                <div style={{fontSize:"13px",fontWeight:"700",color:bc,width:"24px",textAlign:"right"}}>{row.score}</div>
+              </>):(
+                <div style={{fontSize:"12px",color:C.textLight,fontStyle:"italic"}}>Not analyzed</div>
+              )}
+            </div>
+            <div style={{paddingLeft:"78px",marginTop:"3px",display:"flex",gap:"12px"}}>
+              <div style={{fontSize:"11px",color:row.leftScore>0?C.textLight:"#cc9977",fontStyle:row.leftScore>0?"normal":"italic"}}>
+                L: {row.leftScore>0?`${row.leftScore}/10`:"not analyzed"}
+              </div>
+              <div style={{fontSize:"11px",color:row.rightScore>0?C.textLight:"#cc9977",fontStyle:row.rightScore>0?"normal":"italic"}}>
+                R: {row.rightScore>0?`${row.rightScore}/10`:"not analyzed"}
+              </div>
+            </div>
+            {(row.leftNote||row.rightNote)&&(<div style={{fontSize:"11px",color:C.textLight,marginTop:"3px",paddingLeft:"78px",lineHeight:"1.4"}}>
+              ℹ {[row.leftNote,row.rightNote].filter(Boolean).join(" · ")}
+            </div>)}
+          </div>);
+        }
+        const zone=PHOTO_ZONES.find(z=>z.id===row.zoneId);
+        return(<div key={row.zoneId} style={{marginBottom:"10px"}}>
           <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
             <div style={{fontSize:"12px",color:C.textMid,width:"68px",flexShrink:0}}>{zone?.shortLabel}</div>
-            {r.score>0?(<>
+            {row.score>0?(<>
               <div style={{flex:1,height:"6px",borderRadius:"3px",background:"rgba(60,92,83,0.1)",overflow:"hidden"}}>
-                <div style={{height:"100%",width:`${r.score*10}%`,background:bc,borderRadius:"3px",transition:"width 0.8s ease"}}/>
+                <div style={{height:"100%",width:`${row.score*10}%`,background:bc,borderRadius:"3px",transition:"width 0.8s ease"}}/>
               </div>
-              <div style={{fontSize:"13px",fontWeight:"700",color:bc,width:"24px",textAlign:"right"}}>{r.score}</div>
+              <div style={{fontSize:"13px",fontWeight:"700",color:bc,width:"24px",textAlign:"right"}}>{row.score}</div>
             </>):(
               <div style={{fontSize:"12px",color:C.textLight,fontStyle:"italic"}}>Not analyzed</div>
             )}
           </div>
-          {r.photoNote?.trim()&&(<div style={{fontSize:"11px",color:C.textLight,marginTop:"4px",paddingLeft:"78px",lineHeight:"1.4"}}>ℹ {r.photoNote}</div>)}
+          {row.photoNote?.trim()&&(<div style={{fontSize:"11px",color:C.textLight,marginTop:"4px",paddingLeft:"78px",lineHeight:"1.4"}}>ℹ {row.photoNote}</div>)}
         </div>);
       })}
-    </div>
+    </div>div>
 
-    {/* Per-zone findings */}
+    {/* Per-zone findings — ears grouped under one heading */}
     <div style={S.card}>
       <div style={S.lbl}>Key findings by area</div>
-      {results.map((r,i)=>{
-        const zone=PHOTO_ZONES.find(z=>z.id===r.zoneId);
-        return(<div key={i} style={{marginBottom:"16px"}}>
+      {buildDisplayRows(results).map((row,i)=>{
+        if(row.type==="ears_group"){
+          const hasAny = row.leftScore>0 || row.rightScore>0;
+          return(<div key="ears-findings" style={{marginBottom:"16px"}}>
+            <div style={{fontSize:"13px",fontWeight:"700",color:C.forest,marginBottom:"8px",paddingBottom:"4px",borderBottom:"1px solid rgba(60,92,83,0.1)"}}>Ears (Left &amp; Right)</div>
+            {/* Left ear */}
+            <div style={{marginBottom:"10px"}}>
+              <div style={{fontSize:"12px",fontWeight:"600",color:C.textMid,marginBottom:"4px",paddingLeft:"4px"}}>Left Ear</div>
+              {row.leftScore>0?(
+                row.leftObs.map((obs,j)=>(<div key={j} style={{display:"flex",gap:"10px",alignItems:"flex-start",marginBottom:"5px"}}>
+                  <div style={{width:"6px",height:"6px",borderRadius:"50%",background:C.sky,flexShrink:0,marginTop:"5px"}}/>
+                  <div style={{fontSize:"13px",color:C.textMid,lineHeight:"1.5"}}>{obs}</div>
+                </div>))
+              ):(
+                <div style={{fontSize:"13px",color:C.textLight,fontStyle:"italic",paddingLeft:"4px",lineHeight:"1.5"}}>
+                  {row.leftNote||"We weren't able to analyze this photo. Our apologies — please try re-uploading."}
+                </div>
+              )}
+            </div>
+            {/* Right ear */}
+            <div>
+              <div style={{fontSize:"12px",fontWeight:"600",color:C.textMid,marginBottom:"4px",paddingLeft:"4px"}}>Right Ear</div>
+              {row.rightScore>0?(
+                row.rightObs.map((obs,j)=>(<div key={j} style={{display:"flex",gap:"10px",alignItems:"flex-start",marginBottom:"5px"}}>
+                  <div style={{width:"6px",height:"6px",borderRadius:"50%",background:C.sky,flexShrink:0,marginTop:"5px"}}/>
+                  <div style={{fontSize:"13px",color:C.textMid,lineHeight:"1.5"}}>{obs}</div>
+                </div>))
+              ):(
+                <div style={{fontSize:"13px",color:C.textLight,fontStyle:"italic",paddingLeft:"4px",lineHeight:"1.5"}}>
+                  {row.rightNote||"We weren't able to analyze this photo. Our apologies — please try re-uploading."}
+                </div>
+              )}
+            </div>
+          </div>);
+        }
+        const zone=PHOTO_ZONES.find(z=>z.id===row.zoneId);
+        return(<div key={row.zoneId} style={{marginBottom:"16px"}}>
           <div style={{fontSize:"13px",fontWeight:"700",color:C.forest,marginBottom:"6px",paddingBottom:"4px",borderBottom:"1px solid rgba(60,92,83,0.1)"}}>{zone?.label}</div>
-          {(!r.score||r.score===0)?(
+          {(!row.score||row.score===0)?(
             <div style={{fontSize:"13px",color:C.textLight,fontStyle:"italic",paddingLeft:"4px",lineHeight:"1.5"}}>
-              {r.photoNote||"We weren't able to analyze this photo. Our apologies — please try re-uploading using the guide above."}
+              {row.photoNote||"We weren't able to analyze this photo. Our apologies — please try re-uploading using the guide above."}
             </div>
           ):(
-            (r.observations||[]).map((obs,j)=>(<div key={j} style={{display:"flex",gap:"10px",alignItems:"flex-start",marginBottom:"6px"}}>
+            (row.observations||[]).map((obs,j)=>(<div key={j} style={{display:"flex",gap:"10px",alignItems:"flex-start",marginBottom:"6px"}}>
               <div style={{width:"6px",height:"6px",borderRadius:"50%",background:C.sky,flexShrink:0,marginTop:"5px"}}/>
               <div style={{fontSize:"13px",color:C.textMid,lineHeight:"1.5"}}>{obs}</div>
             </div>))
@@ -697,7 +835,7 @@ export default function NoblDogTracker(){
           <button style={{...S.btnPrimary,opacity:canStart?1:0.4}} disabled={!canStart} onClick={()=>setStep("photos")}>Begin Baseline Photos →</button>
         </div>
         <div style={S.card}>
-          <div style={S.lbl}>5 areas we monitor</div>
+          <div style={S.lbl}>6 areas we monitor</div>
           <div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>
             {PHOTO_ZONES.map(z=>(<div key={z.id} style={{background:"rgba(60,92,83,0.07)",borderRadius:"8px",padding:"6px 12px",fontSize:"13px",color:C.forest,fontWeight:"500"}}>{z.shortLabel}</div>))}
           </div>
